@@ -43,6 +43,9 @@ cd ~/ros2_ws
 colcon build --symlink-install
 source install/setup.bash
 ```
+### Flash ESP32
+Flash ESP32 with `main.ino` file with Arduino IDE or preferred method, ESP cannot be flashed while micro_ros_agent is running
+
 
 ### Run the micro-ROS Agent
 Connect your ESP32 and start the micro-ROS agent:
@@ -64,6 +67,11 @@ python3 ~/ros2_ws/scripts/keyboard_control.py
 | `W`  | Turn LED ON |
 | `S`  | Turn LED OFF |
 | `Q`  | Quit the script |
+
+### Viewing ROS2 Topics via Termminal
+```sh
+ros2 topic echo /micro_ros_arduino_node_publisher 
+```
 
 ## Pushing Updates to GitHub
 After making changes, commit and push your updates:
