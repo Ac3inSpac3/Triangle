@@ -1,105 +1,141 @@
 #include "MotorControl.h"
 #include <Arduino.h>
 
+/*
+Functionality to be added:
 
+Sending:
+- sendMotorFeedback()
+  - Send motor enable status (bool)
+  - Send speed mode status (1, 2, 3)
+
+Recieving:
+- functionTBD()
+  - Recieve command for enable and disable motors (bool motorsEnabled)
+  - Recieve command for setting speed mode (int 1, 2, 3)
+*/
+
+// Constructor: Initializes motor speeds to zero
 MotorControl::MotorControl() {
-  // Initialize the motor speeds to zero
   motorSpeed1 = 0;
   motorSpeed2 = 0;
   motorSpeed3 = 0;
 }
 
 void MotorControl::init() {
-  // Initialize pins
+  // Configure motor control pins as input/output
   pinMode(m1En, OUTPUT);
   pinMode(m1Dir, OUTPUT);
   pinMode(m1Fault, INPUT);
-  pinMode(m1Speed, INPUT);
+
   pinMode(m2En, OUTPUT);
   pinMode(m2Dir, OUTPUT);
+  pinMode(m2Fault, INPUT);
+
   pinMode(m3En, OUTPUT);
   pinMode(m3Dir, OUTPUT);
+  pinMode(m3Fault, INPUT);
+
+  // Configure buttons as inputs with pull-up resistors
+  pinMode(btnStop, INPUT);
+  pinMode(btnReset, INPUT);
+  pinMode(btnMode, INPUT);
+  pinMode(btnEnable, INPUT);
 
   // Set up PWM for each motor
   ledcAttach(m1PWM, pwmFrequency, pwmResolution);
-  //ledcSetup(m1Channel, pwmFrequency, pwmResolution);
-  //ledcAttachPin(m1PWM, m1Channel);
-
   ledcAttach(m2PWM, pwmFrequency, pwmResolution);
-  //ledcSetup(m2Channel, pwmFrequency, pwmResolution);
-  //ledcAttachPin(m2PWM, m2Channel);
-
   ledcAttach(m3PWM, pwmFrequency, pwmResolution);
-  //ledcSetup(m3Channel, pwmFrequency, pwmResolution);
-  //ledcAttachPin(m3PWM, m3Channel);
 
 }
 
 void MotorControl::updateMotors(float Vx, float Vy, float omega) {
+  // Checks if motors enabled flag is true, if false returns as calculating speeds is not needed
+  if (!motorsEnabled) {
+    enableMotors(false);    // Redundancy 
+    return;
+  }
+
+  // If non zero motion command is received, enable motors and compute speeds
   if(Vx != 0 || Vy != 0 || omega != 0){
     enableMotors(true);
-    // Compute motor speeds based on the input values
+
+    // Compute the required motor speeds based on velocity inputs
     computeMotorSpeeds(Vx, Vy, omega);
 
-    // Set motor speeds with direction and PWM output
+    // Set motor PWM signals and direction
     setMotorPWM(motorSpeed1, m1PWM, m1En, m1Dir); // Motor 1
     setMotorPWM(motorSpeed2, m2PWM, m2En, m2Dir); // Motor 2
     setMotorPWM(motorSpeed3, m3PWM, m3En, m3Dir); // Motor 3
 
   }
   else{
+    // If no movement command, disable motors
     enableMotors(false);
   }
 }
 
 void MotorControl::computeMotorSpeeds(float Vx, float Vy, float omega) {
-  // Example: Basic kinematic calculation for a 3-wheel holonomic robot
-  float r = 0.1;  // Wheel radius
-  float d = 0.1;  // Wheel distance from center of robot
+  // Compute motor speeds using kinematics for a 3-wheel holonomic drive
+  float r = 0.055;  // Wheel radius (meters)
+  float d = 0.16;  // Distance from robot center to wheel (meters)
   
-  motorSpeed1 = -(Vx/2) + ((sqrt(3) * Vy )/ 2) + (omega * d);
-  motorSpeed2 = -(Vx/2) - ((sqrt(3) * Vy )/ 2) + (omega * d);
-  motorSpeed3 = Vx + (omega * d);
+  // Compute motor speeds in radians per second
+  motorSpeed1 = (1 / r) * (-0.5 * Vx + (sqrt(3) / 2) * Vy + d * omega);
+  motorSpeed2 = (1 / r) * (-0.5 * Vx - (sqrt(3) / 2) * Vy + d * omega);
+  motorSpeed3 = (1 / r) * (Vx + d * omega);
 }
 
-void MotorControl::enableMotors(bool en){
-  if(en){
-    digitalWrite(m1En, HIGH);
-    digitalWrite(m2En, HIGH);
-    digitalWrite(m3En, HIGH);
-  }
-  else{
-    digitalWrite(m1En, LOW);
-    digitalWrite(m2En, LOW);
-    digitalWrite(m3En, LOW);
-  }
+void MotorControl::enableMotors(bool en) {
+  // Enable or disable all motors based on the command
+  digitalWrite(m1En, en ? HIGH : LOW);
+  digitalWrite(m2En, en ? HIGH : LOW);
+  digitalWrite(m3En, en ? HIGH : LOW);
 }
 
 
 void MotorControl::setMotorPWM(float motorSpeed, int pwmPin, int enPin, int dirPin) {
-  // Set direction
-  bool dir;
+  // Determine the direction of rotation
   if (motorSpeed >= 0) {
-    digitalWrite(dirPin, HIGH); // Forward
-    dir = true;
-  } else {
-    digitalWrite(dirPin, LOW);  // Backward
-    motorSpeed = -motorSpeed;   // Convert to positive for PWM
-    dir = false;
+    digitalWrite(dirPin, HIGH); // Forward direction
+  } 
+  else {
+    digitalWrite(dirPin, LOW);  // Reverse direction
+    motorSpeed = -motorSpeed;   // Convert speed to positive value
   }
 
-  // Ensure motor is enabled
-  digitalWrite(enPin, HIGH);
-
-  // Map motorSpeed to PWM duty cycle (adjust as needed)
-  int pwmDutyCycle = map(motorSpeed, 0, 130, minDutyCycle, maxDutyCycle);  // Scale motor speed to 10% to 90% PWM range
+  // Map motor speed to a PWM duty cycle (scaled to fit the range)
+  int pwmDutyCycle = map(motorSpeed, 0, 130, minDutyCycle, maxDutyCycle);  
   ledcWrite(pwmPin, pwmDutyCycle);
-  ///Serial.print("Motor "); Serial.print(pwmChannel); 
-  //Serial.print(" Duty "); Serial.print(pwmDutyCycle);
-  //Serial.print(" Reversed "); Serial.println(dir);
 }
 
 bool MotorControl::sendMotorFeedback() {
-  // Read fault signals (LOW means fault)
-  //return (digitalRead(m1Fault) == LOW, digitalRead(m2Fault) == LOW, digitalRead(m3Fault) == LOW);
+  // Check for motor faults (LOW indicates a fault)
+  return (digitalRead(m1Fault) == LOW || digitalRead(m2Fault) == LOW || digitalRead(m3Fault) == LOW);
+}
+
+void MotorControl::checkButtons() {
+  // Stop button: Disable motors
+  if (digitalRead(btnStop) == LOW) {
+    motorsEnabled = false;
+    enableMotors(false);
+  }
+
+  // Enable button: Re-enable motors
+  if (digitalRead(btnEnable) == LOW) {
+    motorsEnabled = true;
+    enableMotors(true);
+  }
+
+  // Mode button: Cycle speed modes (1 → 2 → 3 → 1)
+  if (digitalRead(btnMode) == LOW) {
+    speedMode = (speedMode % 3) + 1;
+    delay(200); // Debounce delay
+  }
+
+  // Reset button: Restart ESP32
+  if (digitalRead(btnReset) == LOW) {
+    delay(100);
+    ESP.restart();
+  }
 }

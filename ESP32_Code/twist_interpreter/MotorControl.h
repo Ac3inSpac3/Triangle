@@ -13,45 +13,55 @@ class MotorControl {
 
     // Read feedback from motor drivers and send it back to ROS2
     bool sendMotorFeedback();
-    //bool sendMotorFeedback(bool m1, bool m2, bool m3);
 
+    // Enables or disables all motors
     void enableMotors(bool en);
+
+    // Reads button states and performs actions
+    void checkButtons(); 
 
   private:
     // Compute motor speeds based on inverse kinematics for a holonomic robot
     void computeMotorSpeeds(float Vx, float Vy, float omega);
 
-  // Output PWM signals and control direction based on motor speed
+    // Output PWM signals and control direction based on motor speed
     void setMotorPWM(float motorSpeed, int pwmPin, int enPin, int dirPin);
+
+    // Button states
+    bool motorsEnabled = false; // Tracks if motors can be enabled
+    int speedMode = 1;         // Tracks current speed mode (1-3)
 
     // Motor speed values
     int motorSpeed1;
     int motorSpeed2;
     int motorSpeed3;
 
+    // Button Pin definitions
+    const int btnStop = 26;   // Disables motor drivers, cannot be re enabled without pressing btnEnable
+    const int btnReset = 5;   // Allows for resetting firmware to exit micro ros error loop
+    const int btnMode = 9;    // Switching between modes e.g. Speed 1, 2 3 (not implemented yet)
+    const int btnEnable = 14; // Allows for motors to be enabled
+
     // Motor 1 definitions
-    const int m1PWM = 21;     // Correct
-    const int m1En = 4;       // Correct
-    const int m1Dir = 18;     // Correct 
-    const int m1Fault = 22;   // Correct 
-    const int m1Speed = 34;   // Correct 
-    const int m1Channel = 0;  // PWM channel 1 
+    const int m1PWM = 21;     // Pin outputting PWM signal for motor
+    const int m1En = 4;       // High for enable
+    const int m1Dir = 18;     // High for reverse direction 
+    const int m1Fault = 22;   // Input High for motor driver fault 
+    //const int m1Speed = 34; // Input Analogue signal for actual motor speed, not used 
 
     // Motor 2 definitions
-    const int m2PWM = 17;      // Correct
-    const int m2En = 12;       // Correct
-    const int m2Dir = 19;      // Correct
-    const int m2Fault = 27;    // Correct
-    const int m2Speed = 35;    // Correct
-    const int m2Channel = 1;   // PWM channel 1
+    const int m2PWM = 17;      // Pin outputting PWM signal for motor
+    const int m2En = 12;       // High for enable
+    const int m2Dir = 19;      // High for reverse direction 
+    const int m2Fault = 27;    // Input High for motor driver fault 
+    //const int m2Speed = 35;  // Input Analogue signal for actual motor speed, not used 
 
     // Motor 3 definitions
-    const int m3PWM = 16;      // Correct
-    const int m3En = 32;       // Correct
-    const int m3Dir = 23;      // Correct
-    const int m3Fault = 25;    // Correct
-    const int m3Speed = 39;    // Correct
-    const int m3Channel = 2;   // PWM channel 2
+    const int m3PWM = 16;      // Pin outputting PWM signal for motor
+    const int m3En = 32;       // High for enable
+    const int m3Dir = 23;      // High for reverse direction 
+    const int m3Fault = 25;    // Input High for motor driver fault 
+    //const int m3Speed = 39;  // Input Analogue signal for actual motor speed, not used 
 
     // Define the PWM parameters
     const int pwmFrequency = 1000; // 1 kHz PWM frequency
