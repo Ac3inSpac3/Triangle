@@ -27,6 +27,11 @@ class MotorControl {
     // Output PWM signals and control direction based on motor speed
     void setMotorPWM(float motorSpeed, int pwmPin, int enPin, int dirPin);
 
+    // Flashes an LED the number of times specified
+    void flashLED(int i);
+
+    const int ledPin = 2;
+
     // Button states
     bool motorsEnabled = false; // Tracks if motors can be enabled
     int speedMode = 1;         // Tracks current speed mode (1-3)

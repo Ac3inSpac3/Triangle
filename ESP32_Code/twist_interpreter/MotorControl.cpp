@@ -78,7 +78,7 @@ void MotorControl::updateMotors(float Vx, float Vy, float omega) {
 void MotorControl::computeMotorSpeeds(float Vx, float Vy, float omega) {
   // Compute motor speeds using kinematics for a 3-wheel holonomic drive
   float r = 0.055;  // Wheel radius (meters)
-  float d = 0.16;  // Distance from robot center to wheel (meters)
+  float d = 0.16;   // Distance from robot center to wheel (meters)
   
   // Compute motor speeds in radians per second
   motorSpeed1 = (1 / r) * (-0.5 * Vx + (sqrt(3) / 2) * Vy + d * omega);
@@ -114,28 +114,41 @@ bool MotorControl::sendMotorFeedback() {
   return (digitalRead(m1Fault) == LOW || digitalRead(m2Fault) == LOW || digitalRead(m3Fault) == LOW);
 }
 
+void MotorControl::flashLED(int i) {
+  for (int count = 0; count < i; count++) {
+    digitalWrite(ledPin, HIGH);  // Turn LED on
+    delay(100);                   // Wait
+    digitalWrite(ledPin, LOW);   // Turn LED off
+    delay(100);                   // Wait
+  }
+}
+
 void MotorControl::checkButtons() {
   // Stop button: Disable motors
   if (digitalRead(btnStop) == LOW) {
     motorsEnabled = false;
     enableMotors(false);
+    flashLED(2);
   }
 
   // Enable button: Re-enable motors
   if (digitalRead(btnEnable) == LOW) {
     motorsEnabled = true;
     enableMotors(true);
+    flashLED(3);
   }
 
   // Mode button: Cycle speed modes (1 → 2 → 3 → 1)
   if (digitalRead(btnMode) == LOW) {
     speedMode = (speedMode % 3) + 1;
     delay(200); // Debounce delay
+    flashLED(4);
   }
 
   // Reset button: Restart ESP32
   if (digitalRead(btnReset) == LOW) {
     delay(100);
     ESP.restart();
+    flashLED(5);
   }
 }
