@@ -1,3 +1,4 @@
+
 #include <micro_ros_arduino.h>
 #include <Arduino.h>
 
@@ -101,7 +102,7 @@ void setup() {
 }
 
 void loop() {
-  delay(100); // Brief delay between execution cycles
+  //delay(100); // Brief delay between execution cycles
 
   // Check motor status and publish fault status
   fault_msg.data = motorControl.sendMotorFeedback();
@@ -113,5 +114,3 @@ void loop() {
   // Check button status and implement commanded changes  
   motorControl.checkButtons();
 }
-
-

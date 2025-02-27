@@ -44,7 +44,7 @@ class MotorControl {
     // Button Pin definitions
     const int btnStop = 26;   // Disables motor drivers, cannot be re enabled without pressing btnEnable
     const int btnReset = 5;   // Allows for resetting firmware to exit micro ros error loop
-    const int btnMode = 9;    // Switching between modes e.g. Speed 1, 2 3 (not implemented yet)
+    //const int btnMode = 9;    // Switching between modes e.g. Speed 1, 2 3 (not implemented yet)
     const int btnEnable = 14; // Allows for motors to be enabled
 
     // Motor 1 definitions
@@ -52,21 +52,18 @@ class MotorControl {
     const int m1En = 4;       // High for enable
     const int m1Dir = 18;     // High for reverse direction 
     const int m1Fault = 22;   // Input High for motor driver fault 
-    //const int m1Speed = 34; // Input Analogue signal for actual motor speed, not used 
 
     // Motor 2 definitions
     const int m2PWM = 17;      // Pin outputting PWM signal for motor
     const int m2En = 12;       // High for enable
     const int m2Dir = 19;      // High for reverse direction 
     const int m2Fault = 27;    // Input High for motor driver fault 
-    //const int m2Speed = 35;  // Input Analogue signal for actual motor speed, not used 
 
     // Motor 3 definitions
     const int m3PWM = 16;      // Pin outputting PWM signal for motor
     const int m3En = 32;       // High for enable
     const int m3Dir = 23;      // High for reverse direction 
     const int m3Fault = 25;    // Input High for motor driver fault 
-    //const int m3Speed = 39;  // Input Analogue signal for actual motor speed, not used 
 
     // Define the PWM parameters
     const int pwmFrequency = 1000; // 1 kHz PWM frequency

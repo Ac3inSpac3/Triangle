@@ -39,7 +39,7 @@ void MotorControl::init() {
   // Configure buttons as inputs with pull-up resistors
   pinMode(btnStop, INPUT);
   pinMode(btnReset, INPUT);
-  pinMode(btnMode, INPUT);
+  //pinMode(btnMode, INPUT);
   pinMode(btnEnable, INPUT);
 
   // Set up PWM for each motor
@@ -104,21 +104,21 @@ void MotorControl::setMotorPWM(float motorSpeed, int pwmPin, int enPin, int dirP
     motorSpeed = -motorSpeed;   // Convert speed to positive value
   }
 
-  // Map motor speed to a PWM duty cycle (scaled to fit the range)
-  int pwmDutyCycle = map(motorSpeed, 0, 130, minDutyCycle, maxDutyCycle);  
+  // Map motor speed to a PWM duty cycle (scaled to fit the range) 
+  int pwmDutyCycle = map(motorSpeed, 0, 2400, minDutyCycle, maxDutyCycle);  
   ledcWrite(pwmPin, pwmDutyCycle);
 }
 
 bool MotorControl::sendMotorFeedback() {
   // Check for motor faults (LOW indicates a fault)
-  return (digitalRead(m1Fault) == LOW || digitalRead(m2Fault) == LOW || digitalRead(m3Fault) == LOW);
+  return (digitalRead(m2Fault) == LOW);
 }
 
 void MotorControl::flashLED(int i) {
   for (int count = 0; count < i; count++) {
-    digitalWrite(ledPin, HIGH);  // Turn LED on
+    digitalWrite(ledPin, HIGH);   // Turn LED on
     delay(100);                   // Wait
-    digitalWrite(ledPin, LOW);   // Turn LED off
+    digitalWrite(ledPin, LOW);    // Turn LED off
     delay(100);                   // Wait
   }
 }
@@ -134,21 +134,13 @@ void MotorControl::checkButtons() {
   // Enable button: Re-enable motors
   if (digitalRead(btnEnable) == LOW) {
     motorsEnabled = true;
-    enableMotors(true);
+    //enableMotors(true);
     flashLED(3);
-  }
-
-  // Mode button: Cycle speed modes (1 → 2 → 3 → 1)
-  if (digitalRead(btnMode) == LOW) {
-    speedMode = (speedMode % 3) + 1;
-    delay(200); // Debounce delay
-    flashLED(4);
   }
 
   // Reset button: Restart ESP32
   if (digitalRead(btnReset) == LOW) {
-    delay(100);
-    ESP.restart();
     flashLED(5);
+    ESP.restart();
   }
 }
