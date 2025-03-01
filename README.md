@@ -158,6 +158,8 @@ Connect your ESP32 and start the micro-ROS agent:
 ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyUSB0
 ```
 
+---
+
 ## Tips and Tricks
 
 ### Working with GitHub through Terminal on the Pi5
@@ -265,8 +267,12 @@ ros2 topic pub /status std_msgs/msg/String "{data: 'Robot is active'}" -r 0.5
 ```
 `-r 0.5` sends messages on a loop at 0.5Hz, Ctrl+C to stop
 
+---
+
 ## License
 This project is licensed under the MIT License.
+
+---
 
 ## Troubleshooting
 - TBD
