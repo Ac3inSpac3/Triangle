@@ -6,8 +6,6 @@ This repository supports the base platform for a three-wheeled holonomic drive r
 
 The project addresses limitations in traditional mobile robots by integrating an RGB-D camera and LiDAR for enhanced perception and navigation. The holonomic drive system allows for omnidirectional movement, providing greater flexibility in confined spaces.
 
----
-
 ## Key Features:
 - **Modular Base Platform:** Designed for expansion and upgrades, using carbon fiber rods and 3D-printed components.
 - **ESP32 Motor Control:** Processes ROS2 movement commands into motor signals using a custom control library.
@@ -16,12 +14,8 @@ The project addresses limitations in traditional mobile robots by integrating an
 - **Sensor Suite:** Uses LiDAR, RGB-D camera, and IMU for real-time mapping, obstacle detection, and SLAM.
 - **ROS2 Integration:** Designed for autonomous navigation, with real-time obstacle avoidance and remote control capabilities.
 
----
-
 ## Project Goal
 The Triangle Robot Platform is designed to be a modular and adaptable base for research in autonomous navigation and robotic manipulation. It integrates a holonomic drive system, vision-based perception, and ROS2 compatibility to enable real-time path planning, obstacle avoidance, and scalable robotic applications.
-
----
 
 ## Table of Contents
 - [Project Structure](#project-structure)
@@ -36,8 +30,6 @@ The Triangle Robot Platform is designed to be a modular and adaptable base for r
   - [General ROS2 Practices](#general-ros2-practices)
 - [License](#license)
 - [Troubleshooting](#troubleshooting)
-
----
 
 ## Project Structure
 ```
@@ -54,8 +46,6 @@ ros2_ws/
 │── .gitignore      # Files to be ignored when commiting to GitHub
 ```
 
----
-
 ## Features being worked on
 
 - [ ] Remote control / remote monitoring (Game controller or Web server)
@@ -63,12 +53,6 @@ ros2_ws/
 - [ ] Autonomous navigation
 - [ ] Kinect 360 integration
 - [ ] Advanced navigation
-
----
-
-## 
-
-
 
 ## Installation & Setup
 
@@ -193,8 +177,6 @@ Connect your ESP32 and start the micro-ROS agent:
 ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyUSB0
 ```
 
----
-
 ## Tips and Tricks
 
 ### Working with GitHub through Terminal on the Pi5
@@ -302,13 +284,8 @@ ros2 topic pub /status std_msgs/msg/String "{data: 'Robot is active'}" -r 0.5
 ```
 `-r 0.5` sends messages on a loop at 0.5Hz, Ctrl+C to stop
 
----
-
 ## License
 This project is licensed under the MIT License.
 
----
-
 ## Troubleshooting
 - TBD
-
