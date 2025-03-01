@@ -2,6 +2,22 @@
 
 This repository contains ROS2 scripts for controlling an ESP32 using micro-ROS. The ESP32 receives ROS2 messages to control an LED and sends button press events back to ROS2.
 
+## Table of Contents
+- [Project Structure](#project-structure)
+- [Installation & Setup](#installation--setup)
+  - [Initial Steps](#initial-steps)
+  - [Installing ROS2 Jazzy](#installing-ros2-jazzy)
+  - [Setting up Triangle Project](#setting-up-triangle-project)
+  - [Motordriver Microcontroller Flashing](#motordriver-microcontroller-flashing)
+  - [Running Robot in ROS2](#running-robot-in-ros2)
+- [Tips and Tricks](#tips-and-tricks)
+  - [Working with GitHub through Terminal on the Pi5](#working-with-github-through-terminal-on-the-pi5)
+  - [General ROS2 Practices](#general-ros2-practices)
+- [License](#license)
+- [Troubleshooting](#troubleshooting)
+
+---
+
 ## Project Structure
 ```
 ros2_ws/
@@ -17,34 +33,7 @@ ros2_ws/
 │── .gitignore # Files to be ignored when commiting to GitHub
 ```
 
-## Tips and Tricks
-
-### Working with GitHub through terminal on the Pi5
-#### Pulling changes to the Pi
-Before making any changes, it is best to pull changes from GitHub to the Pi to prevent errors:
-```sh
-git pull
-```
-
-#### Pushing Updates to GitHub
-After making changes, commit and push your updates:
-```sh
-git add .
-git commit -m "Updated scripts and README"
-git push origin main
-```
-
-### View the local changes:
-Before committing you can view all the local changes that will be pushed to GitHub using:
-```sh
-git status
-```
-
-### Viewing ROS2 Topics via Termminal
-For example, viewing messages on the topic 'micro_ros_arduino_node_publisher':
-```sh
-ros2 topic echo /micro_ros_arduino_node_publisher 
-```
+---
 
 ## Installation & Setup
 
@@ -156,7 +145,7 @@ source install/setup.bash
 
 ### Motordriver microcontroller flashing
 1. Flash ESP32
-Flash ESP32 with `main.ino` file with Arduino IDE or preferred method, ESP cannot be flashed while micro_ros_agent is running
+Flash ESP32 with Arduino IDE or preferred method, ESP cannot be flashed while micro_ros_agent is running
 
 ### Running robot in ROS2
 Steps TBD as project progresses
@@ -168,6 +157,113 @@ Connect your ESP32 and start the micro-ROS agent:
 ```sh
 ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyUSB0
 ```
+
+## Tips and Tricks
+
+### Working with GitHub through Terminal on the Pi5
+
+#### Understanding `git pull` vs `git fetch`
+- Use `git fetch` when you want to check for updates without modifying your local files. This is useful if you want to review changes before merging.
+- Use `git pull` when you are ready to update your local branch with the latest changes from the remote repository.
+
+**When to use `git fetch`**
+```sh
+git fetch origin  # Retrieve changes from remote
+git status  # Check what has changed before merging
+git merge origin/main  # Merge if needed
+```
+
+**When to use `git pull`**
+```sh
+git pull origin main  # Fetch and automatically merge changes
+```
+
+#### Switching Between Branches
+```sh
+git checkout -b feature-branch  # Create and switch to a new branch
+git checkout main  # Switch back to the main branch
+git merge feature-branch  # Merge feature-branch into main
+```
+
+#### Handling Merge Conflicts
+```sh
+git add .  # Stage resolved files
+git commit -m "Resolved merge conflict"
+git push origin main  # Push resolved changes
+```
+
+#### Resetting Unwanted Changes
+```sh
+git checkout -- filename  # Discard changes in a file
+git reset --hard HEAD  # Discard all uncommitted changes
+```
+
+#### Stashing Temporary Changes
+```sh
+git stash  # Save uncommitted changes
+git checkout main  # Switch branches
+git stash pop  # Restore saved changes
+```
+
+#### Viewing Log History
+```sh
+git log --oneline --graph --all --decorate  # View commit history
+```
+
+### General ROS2 Practices
+
+#### Sourcing the Environment
+Every time you build or modify your ROS2 workspace, you need to source the setup file:
+```sh
+source install/setup.bash  # Source after building
+```
+
+#### Building the Workspace
+After adding new packages or modifying code, always rebuild your workspace:
+```sh
+colcon build --symlink-install
+source install/setup.bash
+```
+
+#### Checking Available ROS2 Nodes and Topics
+To list all running nodes:
+```sh
+ros2 node list
+```
+To check active topics:
+```sh
+ros2 topic list
+```
+To see messages from a topic:
+```sh
+ros2 topic echo /your_topic_name
+```
+
+#### Running ROS2 Packages
+To launch a ROS2 package with a launch file:
+```sh
+ros2 launch package_name launch_file.py
+```
+To run a single node:
+```sh
+ros2 run package_name node_name
+```
+To run a single file:
+```sh
+python filename.py
+```
+
+#### Manually send ROS2 messages through terminal
+##### Sending a Twist message to control a robot:
+```sh
+ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.5, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 1.0}}" --once
+```
+Remove the `--once` flag to send on loop
+##### Sending an std_msgs/String message
+```sh
+ros2 topic pub /status std_msgs/msg/String "{data: 'Robot is active'}" -r 0.5
+```
+`-r 0.5` sends messages on a loop at 0.5Hz, Ctrl+C to stop
 
 ## License
 This project is licensed under the MIT License.
