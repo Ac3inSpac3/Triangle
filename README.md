@@ -1,6 +1,27 @@
 # Triangle
+**T**hree-wheeled **R**obotics platform for **I**ntelligent, **A**utonomous **N**avigation, **G**uidance and **L**ocalisation in unknown **E**nvironments
 
-This repository contains ROS2 scripts for controlling an ESP32 using micro-ROS. The ESP32 receives ROS2 messages to control an LED and sends button press events back to ROS2.
+## Project Summary
+This repository supports the base platform for a three-wheeled holonomic drive robot developed in EGH400 at QUT, originally designed by Josh Roe. The platform is designed to enable dynamic vision-based navigation for bimanual manipulation tasks, focusing on real-time path planning and obstacle avoidance in complex environments.
+
+The project addresses limitations in traditional mobile robots by integrating an RGB-D camera and LiDAR for enhanced perception and navigation. The holonomic drive system allows for omnidirectional movement, providing greater flexibility in confined spaces.
+
+---
+
+## Key Features:
+- **Modular Base Platform:** Designed for expansion and upgrades, using carbon fiber rods and 3D-printed components.
+- **ESP32 Motor Control:** Processes ROS2 movement commands into motor signals using a custom control library.
+- **Raspberry Pi 5 Compute Module:** Runs ROS2 for SLAM and high-level navigation tasks.
+- **Custom Motor Driver PCB:** Integrates power protection features (TVS diodes, capacitors, fuses) and improves motor control.
+- **Sensor Suite:** Uses LiDAR, RGB-D camera, and IMU for real-time mapping, obstacle detection, and SLAM.
+- **ROS2 Integration:** Designed for autonomous navigation, with real-time obstacle avoidance and remote control capabilities.
+
+---
+
+## Project Goal
+The Triangle Robot Platform is designed to be a modular and adaptable base for research in autonomous navigation and robotic manipulation. It integrates a holonomic drive system, vision-based perception, and ROS2 compatibility to enable real-time path planning, obstacle avoidance, and scalable robotic applications.
+
+---
 
 ## Table of Contents
 - [Project Structure](#project-structure)
@@ -8,7 +29,7 @@ This repository contains ROS2 scripts for controlling an ESP32 using micro-ROS. 
   - [Initial Steps](#initial-steps)
   - [Installing ROS2 Jazzy](#installing-ros2-jazzy)
   - [Setting up Triangle Project](#setting-up-triangle-project)
-  - [Motordriver Microcontroller Flashing](#motordriver-microcontroller-flashing)
+  - [Motor Driver Microcontroller Flashing](#motor-driver-microcontroller-flashing)
   - [Running Robot in ROS2](#running-robot-in-ros2)
 - [Tips and Tricks](#tips-and-tricks)
   - [Working with GitHub through Terminal on the Pi5](#working-with-github-through-terminal-on-the-pi5)
@@ -21,19 +42,33 @@ This repository contains ROS2 scripts for controlling an ESP32 using micro-ROS. 
 ## Project Structure
 ```
 ros2_ws/
-│── build/    (Generated after colcon build)
-│── install/  (Generated after colcon build)
-│── src/      (Generated after colcon build)
-│── log/      (Generated after colcon build)
-├── scripts/
-│   ├── keyboard_control.py   # Send keyboard commands to ESP32
-├── ESP32_Code/
-│   ├── main   # Main ESP32 code, current code is basic pub/sub
-│── README.md  # This file
-│── .gitignore # Files to be ignored when commiting to GitHub
+│── build/          (Generated after colcon build)
+│── install/        (Generated after colcon build)
+│── src/            (Generated after colcon build)
+│── log/            (Generated after colcon build)
+├── scripts/        # Stand alone scripts made for TRIANGLE
+│   ├── example.py  # Send keyboard commands to ESP32
+├── ESP32_Code/     # Code developed for the ESP32 Motor driver
+│   ├── main        # Main ESP32 code, current code is basic pub/sub
+│── README.md       # This file
+│── .gitignore      # Files to be ignored when commiting to GitHub
 ```
 
 ---
+
+## Features being worked on
+
+- [ ] Remote control / remote monitoring (Game controller or Web server)
+- [ ] LiDAR integration
+- [ ] Autonomous navigation
+- [ ] Kinect 360 integration
+- [ ] Advanced navigation
+
+---
+
+## 
+
+
 
 ## Installation & Setup
 
@@ -143,7 +178,7 @@ colcon build --symlink-install
 source install/setup.bash
 ```
 
-### Motordriver microcontroller flashing
+### Motor Driver microcontroller flashing
 1. Flash ESP32
 Flash ESP32 with Arduino IDE or preferred method, ESP cannot be flashed while micro_ros_agent is running
 
