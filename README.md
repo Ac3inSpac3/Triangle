@@ -23,9 +23,7 @@ ros2_ws/
 #### Pulling changes to the Pi
 Before making any changes, it is best to pull changes from GitHub to the Pi to prevent errors:
 ```sh
-git add .
-git commit -m "Updated scripts and README"
-git push origin main
+git pull
 ```
 
 #### Pushing Updates to GitHub
@@ -33,6 +31,13 @@ After making changes, commit and push your updates:
 ```sh
 git add .
 git commit -m "Updated scripts and README"
+git push origin main
+```
+
+### View the local changes:
+Before committing you can view all the local changes that will be pushed to GitHub using:
+```sh
+git status
 ```
 
 ### Viewing ROS2 Topics via Termminal
