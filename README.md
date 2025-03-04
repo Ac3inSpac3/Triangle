@@ -2,7 +2,7 @@
 **T**hree-wheeled **R**obotics platform for **I**ntelligent, **A**utonomous **N**avigation, **G**uidance and **L**ocalisation in unknown **E**nvironments
 
 ## Project Summary
-This repository supports the base platform for a three-wheeled holonomic drive robot developed in EGH400 at QUT, originally designed by Josh Roe. The platform is designed to enable dynamic vision-based navigation for bimanual manipulation tasks, focusing on real-time path planning and obstacle avoidance in complex environments.
+This repository supports the base platform for a three-wheeled holonomic drive robot developed in EGH400 at QUT, originally designed by Josh Roe. The platform is designed to enable dynamic vision and LiDAR based navigation for bimanual manipulation tasks, focusing on real-time path planning and obstacle avoidance in complex environments.
 
 The project addresses limitations in traditional mobile robots by integrating an RGB-D camera and LiDAR for enhanced perception and navigation. The holonomic drive system allows for omnidirectional movement, providing greater flexibility in confined spaces.
 
@@ -283,9 +283,6 @@ Remove the `--once` flag to send on loop
 ros2 topic pub /status std_msgs/msg/String "{data: 'Robot is active'}" -r 0.5
 ```
 `-r 0.5` sends messages on a loop at 0.5Hz, Ctrl+C to stop
-
-## License
-This project is licensed under the MIT License.
 
 ## Troubleshooting
 - TBD
