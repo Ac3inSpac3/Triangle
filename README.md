@@ -122,16 +122,7 @@ source /opt/ros/jazzy/setup.bash
 ```
 
 10. Verify installation:
-Open a terminal and run a C++ talker:
-```sh
-source /opt/ros/jazzy/setup.bash
-ros2 run demo_nodes_cpp talker
-```
-In another terminal, run a Python listener:
-```sh
-source /opt/ros/jazzy/setup.bash
-ros2 run demo_nodes_py listener
-```
+TBD
 
 ### Setting up Triangle Project
 1. Clone Triangle repository:
