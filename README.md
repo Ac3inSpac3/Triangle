@@ -58,7 +58,7 @@ ros2_ws/
 
 ### Initial Steps
 
-Ensure Ubuntu 24.04 is installed on the Raspberry Pi 5 and configured for remote access via SSH or VNC.
+Ensure Ubuntu 24.04 server is installed on the Raspberry Pi 5 and configured for remote access via SSH.
 
 ### Installing ROS2 Jazzy
 
@@ -110,7 +110,7 @@ sudo apt upgrade
 
 8. Install ROS2 Jazzy Desktop:
 ```sh
-sudo apt install ros-jazzy-desktop
+sudo apt install ros-jazzy-ros-base
 ```
 
 
