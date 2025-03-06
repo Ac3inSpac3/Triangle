@@ -132,19 +132,23 @@ git clone https://github.com/Ac3inSpac3/Triangle.git ~/ros2_ws
 cd ~/ros2_ws
 ```
 
-2. Install dependencies:
+2. Install required packages:
 ```sh
+mkdir ~/ros2_ws/src
 cd ~/ros2_ws/src
-git clone https://github.com/micro-ROS/micro-ROS-Agent -b humble
-git clone https://github.com/micro-ROS/micro_ros_msgs -b humble
+git clone https://github.com/micro-ROS/micro-ROS-Agent -b jazzy
+git clone https://github.com/micro-ROS/micro_ros_msgs -b jazzy
 
 // More to be added as project progresses
 ```
 
-3. Handling errors:
-Any encountered errors and their resolutions will be documented here.
+3. Installing dependencies:
+https://wiki.ros.org/rosdep
 ```sh
-Errors TBD
+cd ~/ros2_ws
+sudo rosdep init
+rosdep update
+rosdep install --from-paths src --ignore-src -r -y
 ```
 
 4. Build the ROS2 Workspace:
