@@ -12,8 +12,8 @@ import select
 # Define the speed and turning increments
 # THIS NEEDS TO BE CHANGED WHEN UPDATING ARDUINO CODE
 
-LINEAR_SPEED_STEP = 50.0
-ANGULAR_SPEED_STEP = 100.0
+LINEAR_SPEED_STEP = 0.5
+ANGULAR_SPEED_STEP = 0.5
 
 class KeyboardTeleop(Node):
     def __init__(self):
@@ -61,8 +61,8 @@ class KeyboardTeleop(Node):
 
                 # Publish the Twist
                 twist = Twist()
-                twist.linear.x = self.linear_speed
-                twist.linear.y = self.linear_strafe
+                twist.linear.x = self.linear_strafe
+                twist.linear.y = self.linear_speed
                 twist.angular.z = self.angular_speed
                 self.cmd_vel_pub.publish(twist)
 
