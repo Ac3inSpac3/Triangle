@@ -32,6 +32,12 @@ class MotorControl {
 
     const int ledPin = 2;
 
+    // Configurable scaling factors
+    float maxRPM = 2000;     // Default max motor RPM
+    bool invertX = false;    // If true, reverses X-axis movement
+    bool invertY = false;    // If true, reverses Y-axis movement
+    bool invertOmega = false;// If true, reverses rotational direction
+
     // Button states
     bool motorsEnabled = false; // Tracks if motors can be enabled
     int speedMode = 1;         // Tracks current speed mode (1-3)
