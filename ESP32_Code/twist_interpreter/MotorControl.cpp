@@ -15,6 +15,10 @@ Recieving:
   - Recieve command for setting speed mode (int 1, 2, 3)
 */
 
+/*
+Max speed inputs for twist messages are 1.5 linear and 6.5 angular
+*/
+
 // Constructor: Initializes motor speeds to zero
 MotorControl::MotorControl() {
   motorSpeed1 = 0;
@@ -76,15 +80,20 @@ void MotorControl::updateMotors(float Vx, float Vy, float omega) {
 }
 
 void MotorControl::computeMotorSpeeds(float Vx, float Vy, float omega) {
-  // Compute motor speeds using kinematics for a 3-wheel holonomic drive
-  float r = 0.055;  // Wheel radius (meters)
-  float d = 0.16;   // Distance from robot center to wheel (meters)
-  
-  // Compute motor speeds in radians per second
-  motorSpeed1 = (1 / r) * (-0.5 * Vx + (sqrt(3) / 2) * Vy + d * omega);
-  motorSpeed2 = (1 / r) * (-0.5 * Vx - (sqrt(3) / 2) * Vy + d * omega);
-  motorSpeed3 = (1 / r) * (Vx + d * omega);
+    // Apply inversion settings
+    if (invertX) Vx = -Vx;
+    if (invertY) Vy = -Vy;
+    if (invertOmega) omega = -omega;
+
+    float r = 0.055;  // Wheel radius (meters)
+    float d = 0.16;   // Distance from robot center to wheel (meters)
+
+    // Compute motor speeds in radians per second
+    motorSpeed1 = (1 / r) * (-0.5 * Vx + (sqrt(3) / 2) * Vy + d * omega);
+    motorSpeed2 = (1 / r) * (-0.5 * Vx - (sqrt(3) / 2) * Vy + d * omega);
+    motorSpeed3 = (1 / r) * (Vx + d * omega);
 }
+
 
 void MotorControl::enableMotors(bool en) {
   // Enable or disable all motors based on the command
@@ -105,7 +114,7 @@ void MotorControl::setMotorPWM(float motorSpeed, int pwmPin, int enPin, int dirP
   }
 
   // Map motor speed to a PWM duty cycle (scaled to fit the range) 
-  int pwmDutyCycle = map(motorSpeed, 0, 2400, minDutyCycle, maxDutyCycle);  
+  int pwmDutyCycle = map(motorSpeed, 0, maxRPS, minDutyCycle, maxDutyCycle);
   ledcWrite(pwmPin, pwmDutyCycle);
 }
 

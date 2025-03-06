@@ -105,8 +105,8 @@ void loop() {
   //delay(100); // Brief delay between execution cycles
 
   // Check motor status and publish fault status
-  fault_msg.data = motorControl.sendMotorFeedback();
-  RCSOFTCHECK(rcl_publish(&fault_publisher, &fault_msg, NULL));
+  //fault_msg.data = motorControl.sendMotorFeedback();
+  //RCSOFTCHECK(rcl_publish(&fault_publisher, &fault_msg, NULL));
 
   // Process incoming messages and execute callbacks
   RCCHECK(rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100)));
