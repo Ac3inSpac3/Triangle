@@ -39,16 +39,17 @@ ros2_ws/
 │── src/            (Generated after colcon build)
 │── log/            (Generated after colcon build)
 ├── scripts/        # Stand alone scripts made for TRIANGLE
-│   ├── example.py  # Send keyboard commands to ESP32
+│   ├── example.py  # Stand alone python script
 ├── ESP32_Code/     # Code developed for the ESP32 Motor driver
-│   ├── main        # Main ESP32 code, current code is basic pub/sub
+│   ├── example     # ESP32 code
 │── README.md       # This file
 │── .gitignore      # Files to be ignored when commiting to GitHub
 ```
 
 ## Features being worked on
 
-- [ ] Remote control / remote monitoring (Game controller or Web server)
+- [x] Remote control via keyboard control
+- [ ] Remote monitoring (e.g. Web server)
 - [ ] LiDAR integration
 - [ ] Autonomous navigation
 - [ ] Kinect 360 integration
