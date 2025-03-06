@@ -114,7 +114,7 @@ void MotorControl::setMotorPWM(float motorSpeed, int pwmPin, int enPin, int dirP
   }
 
   // Map motor speed to a PWM duty cycle (scaled to fit the range) 
-  int pwmDutyCycle = map(motorSpeed, 0, maxRPM, minDutyCycle, maxDutyCycle);
+  int pwmDutyCycle = map(motorSpeed, 0, maxRPS, minDutyCycle, maxDutyCycle);
   ledcWrite(pwmPin, pwmDutyCycle);
 }
 
