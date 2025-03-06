@@ -109,7 +109,7 @@ sudo apt update
 sudo apt upgrade
 ```
 
-8. Install ROS2 Jazzy Desktop:
+8. Install ROS2 Jazzy Base:
 ```sh
 sudo apt install ros-jazzy-ros-base
 ```
