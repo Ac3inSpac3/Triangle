@@ -139,7 +139,7 @@ cd ~/ros2_ws/src
 git clone https://github.com/micro-ROS/micro-ROS-Agent -b jazzy
 git clone https://github.com/micro-ROS/micro_ros_msgs -b jazzy
 
-// More to be added as project progresses
+# More to be added as project progresses
 ```
 
 3. Installing dependencies:
@@ -156,6 +156,16 @@ rosdep install --from-paths src --ignore-src -r -y
 cd ~/ros2_ws
 colcon build --symlink-install
 source install/setup.bash
+```
+
+### Setting Up FOXGLOVE Monitoring (Optional)
+Instal
+```sh
+sudo apt install ros-$ROS_DISTRO-foxglove-bridge
+```
+Run
+```sh
+ros2 launch foxglove_bridge foxglove_bridge_launch.xml
 ```
 
 ### Motor Driver microcontroller flashing
