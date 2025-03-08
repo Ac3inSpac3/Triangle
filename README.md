@@ -142,7 +142,12 @@ git clone https://github.com/micro-ROS/micro_ros_msgs -b jazzy
 # More to be added as project progresses
 ```
 
-3. Installing dependencies:
+3. Install FOXGLOVE Monitoring (Optional)
+```sh
+sudo apt install ros-$ROS_DISTRO-foxglove-bridge
+```
+
+4. Installing dependencies:
 https://wiki.ros.org/rosdep
 ```sh
 cd ~/ros2_ws
@@ -151,21 +156,11 @@ rosdep update
 rosdep install --from-paths src --ignore-src -r -y
 ```
 
-4. Build the ROS2 Workspace:
+5. Build the ROS2 Workspace:
 ```sh
 cd ~/ros2_ws
 colcon build --symlink-install
 source install/setup.bash
-```
-
-### Setting Up FOXGLOVE Monitoring (Optional)
-Instal
-```sh
-sudo apt install ros-$ROS_DISTRO-foxglove-bridge
-```
-Run
-```sh
-ros2 launch foxglove_bridge foxglove_bridge_launch.xml
 ```
 
 ### Motor Driver microcontroller flashing
