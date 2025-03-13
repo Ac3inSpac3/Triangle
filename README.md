@@ -1,6 +1,8 @@
 # Triangle
 **T**hree-wheeled **R**obotics platform for **I**ntelligent, **A**utonomous **N**avigation, **G**uidance and **L**ocalisation in unknown **E**nvironments
 
+**This project is a work in progress and setup is subject to change**
+
 ## Project Summary
 This repository supports the base platform for a three-wheeled holonomic drive robot developed in EGH400 at QUT, originally designed by Josh Roe. The platform is designed to enable dynamic vision and LiDAR based navigation for bimanual manipulation tasks, focusing on real-time path planning and obstacle avoidance in complex environments.
 
@@ -49,8 +51,9 @@ ros2_ws/
 ## Features being worked on
 
 - [x] Remote control via keyboard control
-- [ ] Remote monitoring (e.g. Web server)
+- [x] Remote monitoring (e.g. Web server)
 - [ ] LiDAR integration
+- [ ] IMU Integration
 - [ ] Autonomous navigation
 - [ ] Kinect 360 integration
 - [ ] Advanced navigation
