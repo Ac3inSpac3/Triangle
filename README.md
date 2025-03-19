@@ -3,6 +3,8 @@
 
 **This project is a work in progress and setup is subject to change**
 
+![Current Progress](images/Holonomic%20Drive%20Base%20V3%20v24.png)
+
 ## Project Summary
 This repository supports the base platform for a three-wheeled holonomic drive robot developed in EGH400 at QUT, originally designed by Josh Roe. The platform is designed to enable dynamic vision and LiDAR based navigation for bimanual manipulation tasks, focusing on real-time path planning and obstacle avoidance in complex environments.
 
@@ -32,6 +34,7 @@ The Triangle Robot Platform is designed to be a modular and adaptable base for r
   - [General ROS2 Practices](#general-ros2-practices)
 - [License](#license)
 - [Troubleshooting](#troubleshooting)
+- [Images](#images)
 
 ## Project Structure
 ```
@@ -290,3 +293,15 @@ ros2 topic pub /status std_msgs/msg/String "{data: 'Robot is active'}" -r 0.5
 
 ## Troubleshooting
 - TBD
+
+## Images
+
+### High Level System Architecutre at start of project
+![System Architecture](images/systen_Architecture.png)
+
+### PCB provided at the start of the project
+![Old PCB](images/old_PCB.png)
+
+### Updated PCB after implementation of  power protection and ESP32
+![New PCB Schematic](images/motor_interface_schematic.png)
+![New PCB](images/new_PCB.png)
