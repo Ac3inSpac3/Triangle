@@ -6,14 +6,12 @@ void setup() {
   Serial.begin(115200);
   motorControl.init();  // Initialize the motor control system
   Serial.println("MotorControl initialized.");
-  motorControl.enableMotors(true);
-  delay(2000);  // Wait for 2 seconds
 }
 
 void loop() {
   // Send a speed command to the motors
-  Serial.println("Sending speed command: Vx = 0.0, Vy = 0.0, omega = 11.5");
-  motorControl.updateMotors(0, 0.0, 11.5);  // Move forward
+  Serial.println("Sending speed command: Vx = 0.0, Vy = 1.0, omega = 0");
+  motorControl.updateMotors(0.0, 1.0, 0);  // Move forward
   delay(1000);  // Wait for 2 seconds
 
   motorControl.readMotorSpeeds();
@@ -34,8 +32,8 @@ void loop() {
   Serial.print("Motor 3 Speed: "); Serial.println(motorControl.realMotorSpeed3);
   
   // Send a speed command to the motors
-  Serial.println("Sending speed command: Vx = 0.0, Vy = 0.0, omega = -5.5");
-  motorControl.updateMotors(0, 0.0, -5.5);  // Move forward
+  Serial.println("Sending speed command: Vx = 0.0, Vy = 1.0, omega = 0");
+  motorControl.updateMotors(0.0, -1.0, 0);  // Move forward
   delay(1000);  // Wait for 2 seconds
 
   motorControl.readMotorSpeeds();

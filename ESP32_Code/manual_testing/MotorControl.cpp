@@ -53,16 +53,13 @@ void MotorControl::init() {
 }
 
 void MotorControl::readMotorSpeeds() {
-    // Read the raw ADC values (0 - 4095)
-    int raw1 = analogRead(m1Speed);
-    int raw2 = analogRead(m2Speed);
-    int raw3 = analogRead(m3Speed);
+  // Read the raw ADC values (0 - 4095)
+  int raw1 = analogRead(m1Speed);
+  int raw2 = analogRead(m2Speed);
+  int raw3 = analogRead(m3Speed);
 
-    Serial.println("ADC Value motor 1:");
-    Serial.println(raw1);
-
-    // Map voltage to RPM (-2000 to 2000)
-    realMotorSpeed1 = map(raw1, 1790, 3085, 0, 2000);
+  // Map voltage to RPM (-2000 to 2000)
+  realMotorSpeed1 = map(raw1, 1790, 3085, 0, setMotorMaxRPM);
 }
 
 
@@ -88,24 +85,41 @@ void MotorControl::updateMotors(float Vx, float Vy, float omega) {
 
   }
   else{
-    // If no movement command, disable motors
-    enableMotors(false);
+    // If no movement command, send 0 movement command then disable motors, this stops coasting
+    // Compute the required motor speeds based on velocity inputs
+    computeMotorSpeeds(Vx, Vy, omega);
+    // Set motor PWM signals and direction
+    setMotorPWM(motorSpeed1, m1PWM, m1En, m1Dir); // Motor 1
+    setMotorPWM(motorSpeed2, m2PWM, m2En, m2Dir); // Motor 2
+    setMotorPWM(motorSpeed3, m3PWM, m3En, m3Dir); // Motor 3
+    //enableMotors(false);
   }
 }
 
 void MotorControl::computeMotorSpeeds(float Vx, float Vy, float omega) {
-    // Apply inversion settings
-    if (invertX) Vx = -Vx;
-    if (invertY) Vy = -Vy;
-    if (invertOmega) omega = -omega;
+  // Apply inversion settings
+  if (invertX) Vx = -Vx;
+  if (invertY) Vy = -Vy;
+  if (invertOmega) omega = -omega;
 
-    float r = 0.055;  // Wheel radius (meters)
-    float d = 0.16;   // Distance from robot center to wheel (meters)
+  float r = 0.055;  // Wheel radius (meters)
+  float d = 0.16;   // Distance from robot center to wheel (meters)
+  float gearRatio = 26.0;  // Motor rotations per wheel rotation
 
-    // Compute motor speeds in radians per second
-    motorSpeed1 = (1 / r) * (-0.5 * Vx + (sqrt(3) / 2) * Vy + d * omega);
-    motorSpeed2 = (1 / r) * (-0.5 * Vx - (sqrt(3) / 2) * Vy + d * omega);
-    motorSpeed3 = (1 / r) * (Vx + d * omega);
+  // Compute wheel speeds in rad/s
+  float omega_wheel1 = (1 / r) * (-0.5 * Vx + (sqrt(3) / 2) * Vy + d * omega);
+  float omega_wheel2 = (1 / r) * (-0.5 * Vx - (sqrt(3) / 2) * Vy + d * omega);
+  float omega_wheel3 = (1 / r) * (Vx + d * omega);
+
+  // Convert wheel speed to RPM
+  float wheelRPM1 = (omega_wheel1 / (2 * PI)) * 60;
+  float wheelRPM2 = (omega_wheel2 / (2 * PI)) * 60;
+  float wheelRPM3 = (omega_wheel3 / (2 * PI)) * 60;
+
+  // Convert to motor RPM considering gear ratio
+  motorSpeed1 = wheelRPM1 * gearRatio;
+  motorSpeed2 = wheelRPM2 * gearRatio;
+  motorSpeed3 = wheelRPM3 * gearRatio;
 }
 
 
@@ -121,15 +135,34 @@ void MotorControl::setMotorPWM(float motorSpeed, int pwmPin, int enPin, int dirP
   // Determine the direction of rotation
   if (motorSpeed >= 0) {
     digitalWrite(dirPin, HIGH); // Forward direction
-  } 
-  else {
+  } else {
     digitalWrite(dirPin, LOW);  // Reverse direction
-    motorSpeed = -motorSpeed;   // Convert speed to positive value
+    motorSpeed = -motorSpeed;   // Make speed positive for further calculations
   }
 
-  // Map motor speed to a PWM duty cycle (scaled to fit the range) 
-  int pwmDutyCycle = map(motorSpeed, 0, maxRPS, minDutyCycle, maxDutyCycle);
-  Serial.println("Duty");
+  // Check if the commanded motorSpeed exceeds the configured maximum
+  if (motorSpeed > setMotorMaxRPM) {
+    Serial.print("Error: Commanded motor speed (");
+    Serial.print(motorSpeed);
+    Serial.print(" RPM) exceeds maximum allowed (");
+    Serial.print(setMotorMaxRPM);
+    Serial.println(" RPM).");
+    return;  // Abort setting the PWM to avoid executing a command that doesn't match the control input
+  }
+
+  // Calculate the PWM duty cycle based on the desired motor speed (in RPM)
+  float dutyCycle = (motorSpeed / setMotorMaxRPM) * (maxDutyCycle - minDutyCycle) + minDutyCycle;
+
+  // Check if the calculated duty cycle is within the expected bounds
+  if (dutyCycle < minDutyCycle || dutyCycle > maxDutyCycle) {
+    Serial.print("Error: Calculated PWM duty cycle (");
+    Serial.print(dutyCycle);
+    Serial.println(") out of bounds.");
+    return;
+  }
+
+  int pwmDutyCycle = (int)dutyCycle;
+  Serial.print("Duty cycle set to: ");
   Serial.println(pwmDutyCycle);
   ledcWrite(pwmPin, pwmDutyCycle);
 }
