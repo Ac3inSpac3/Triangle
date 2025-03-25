@@ -42,26 +42,10 @@ MotorControl motorControl;
 #define LED_PIN 2  
 
 // ----- Macros for Error Handling -----
-#define RCCHECK(fn)              \
-  {                              \
-    rcl_ret_t temp_rc = fn;      \
-    if ((temp_rc != RCL_RET_OK)) \
-    {                            \
-      error_loop();              \
-    }                            \
-  }
+#define RCCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){error_loop();}}
+#define RCSOFTCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){}}
 
-#define RCSOFTCHECK(fn)          \
-  {                              \
-    rcl_ret_t temp_rc = fn;      \
-    if ((temp_rc != RCL_RET_OK)) \
-    {                            \
-    }                            \
-  }
-
-/**
- * @brief Function to indicate error by blinking LED indefinitely.
- */
+// ----- Function to indicate error by blinking LED indefinitely. -----
 void error_loop()
 {
   while (1)
@@ -71,12 +55,9 @@ void error_loop()
   }
 }
 
-/**
- * @brief Timer callback function that publishes dummy odometry data.
- * 
- * @param timer Timer instance (unused)
- * @param last_call_time Last time the timer was executed (unused)
- */
+// ----- Timer callback function that publishes dummy odometry data. -----
+// timer Timer instance (unused)
+// last_call_time Last time the timer was executed (unused)
 void odom_timer_callback(rcl_timer_t *timer, int64_t last_call_time)
 {
   RCLC_UNUSED(last_call_time);
@@ -109,12 +90,9 @@ void odom_timer_callback(rcl_timer_t *timer, int64_t last_call_time)
   }
 }
 
-/**
- * @brief Callback function for motor enable state subscriber.
- *        This will be used to enable/disable motor drivers.
- *
- * @param msgin Incoming ROS2 message.
- */
+// ----- Callback function for motor enable state subscriber. -----
+// This will be used to enable/disable motor drivers.
+// msgin Incoming ROS2 message.
 void enb_subscription_callback(const void *msgin)
 {
   const std_msgs__msg__Int32 *msg_enb = (const std_msgs__msg__Int32 *)msgin;
@@ -124,23 +102,17 @@ void enb_subscription_callback(const void *msgin)
   
   if(msg_enb->data == 1){
     motorControl.motorsEnabled = true;
-    motorControl.enableMotors(true);
     digitalWrite(LED_PIN, HIGH);
   }
   else{ 
     motorControl.motorsEnabled = false;
-    motorControl.enableMotors(false);
     digitalWrite(LED_PIN, LOW);
   }
-  
 }
 
-/**
- * @brief Callback function for processing Twist (cmd_vel) messages.
- *        This function will be used to control motor movement.
- *
- * @param msgin Incoming ROS2 message.
- */
+// ----- Callback function for processing Twist (cmd_vel) messages. -----
+// This function will be used to control motor movement.
+// msgin Incoming ROS2 message.
 void twist_subscription_callback(const void *msgin)
 {
   const geometry_msgs__msg__Twist *msg_twist = (const geometry_msgs__msg__Twist *)msgin;
@@ -154,9 +126,7 @@ void twist_subscription_callback(const void *msgin)
   motorControl.updateMotors(Vx, Vy, omega);
 }
 
-/**
- * @brief Setup function for micro-ROS node.
- */
+// ----- Setup function for micro-ROS node. -----
 void setup()
 {
   // Initialize micro-ROS transport (e.g., Serial, WiFi)
@@ -218,15 +188,9 @@ void setup()
   // Add both subscribers to executor
   RCCHECK(rclc_executor_add_subscription(&executor, &enb_subscriber, &msg_enb, &enb_subscription_callback, ON_NEW_DATA));
   RCCHECK(rclc_executor_add_subscription(&executor, &twist_subscriber, &msg_twist, &twist_subscription_callback, ON_NEW_DATA));
-
-  // Start Serial for debugging
-  Serial.begin(115200);
-  Serial.println("micro-ROS Odom Node Initialized.");
 }
 
-/**
- * @brief Main loop - Spins the executor to process messages.
- */
+// ----- Main loop - Spins the executor to process messages. -----
 void loop()
 {
   // Process ROS2 messages and execute callbacks

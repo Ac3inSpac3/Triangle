@@ -5,3 +5,4 @@ log/
 *.pyc
 src/micro-ROS-Agent
 src/micro_ros_msgs
+.DS_Store
