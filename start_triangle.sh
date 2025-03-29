@@ -33,3 +33,7 @@ ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0 &
 # Start the ROS2 Razor imu node
 #echo "Starting Razor IMU..."
 #ros2 launch ros2_razor_imu razor-pub.launch.py &
+
+# Start the ROS2 Razor imu node
+#echo "Starting Razor RPLiDAR..."
+ros2 launch sllidar_ros2 view_sllidar_a1_launch.py &

@@ -6,4 +6,5 @@ log/
 src/micro-ROS-Agent
 src/micro_ros_msgs
 src/ros2_razor_imu
+src/sllidar_ros2
 .DS_Store
