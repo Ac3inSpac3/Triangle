@@ -11,6 +11,7 @@
 #include <std_msgs/msg/int32.h>       // For motor enable subscriber
 #include <nav_msgs/msg/odometry.h>    // For odometry publisher
 #include <geometry_msgs/msg/twist.h>  // For twist subscriber
+#include <std_msgs/msg/string.h>  // Include String message type
 
 #include "MotorControl.h"
 
@@ -31,6 +32,10 @@ std_msgs__msg__Int32 msg_enb;
 // ----- Subscriber for Twist Messages (cmd_vel) -----
 rcl_subscription_t twist_subscriber;
 geometry_msgs__msg__Twist msg_twist;
+
+// ----- Publisher for Wheel Speeds as Text -----
+rcl_publisher_t wheel_speeds_publisher;
+std_msgs__msg__String msg_wheel_speeds;
 
 // ----- Single Executor -----
 rclc_executor_t executor;
@@ -63,30 +68,57 @@ void odom_timer_callback(rcl_timer_t *timer, int64_t last_call_time)
   RCLC_UNUSED(last_call_time);
   if (timer != NULL)
   {
-    // Set dummy values for odometry message
+    // Read actual wheel speeds
+    WheelSpeeds speeds = motorControl.readWheelSpeeds();
+
+    float d = 0.16;  // Distance from center to wheels (meters)
+
+    // Extract the measured wheel speeds in m/s
+    float v1 = speeds.wheelSpeed1;
+    float v2 = speeds.wheelSpeed2;
+    float v3 = speeds.wheelSpeed3;
+
+    // Compute Vx, Vy, and omega using the inverse kinematics equations
+    float Vx = ( -v1 - v2 + 2 * v3 ) * (2.0 / 3.0);
+    float Vy = ( sqrt(3) * (v1 - v2) ) * (2.0 / 3.0);
+    float omega = (v1 + v2 + v3) / (3.0 * d);
+    
+    // Fill odometry message
     msg_odom.header.stamp.sec = millis() / 1000; // Convert to seconds
     msg_odom.header.stamp.nanosec = (millis() % 1000) * 1000000; // Convert to nanoseconds
     msg_odom.header.frame_id.data = (char *)"odom";
     msg_odom.child_frame_id.data = (char *)"base_link";
 
-    // Dummy position (robot stays at origin)
+    // Dummy position (no integration for now)
     msg_odom.pose.pose.position.x = 0.0;
     msg_odom.pose.pose.position.y = 0.0;
     msg_odom.pose.pose.position.z = 0.0;
 
-    // Dummy orientation (no rotation)
+    // Dummy orientation (no rotation tracking yet)
     msg_odom.pose.pose.orientation.x = 0.0;
     msg_odom.pose.pose.orientation.y = 0.0;
     msg_odom.pose.pose.orientation.z = 0.0;
-    msg_odom.pose.pose.orientation.w = 1.0; // Represents no rotation (quaternion identity)
+    msg_odom.pose.pose.orientation.w = 1.0;
 
-    // Dummy velocity (robot not moving)
-    msg_odom.twist.twist.linear.x = 0.0;
-    msg_odom.twist.twist.linear.y = 0.0;
-    msg_odom.twist.twist.angular.z = 0.0;
+    // Set computed velocities
+    msg_odom.twist.twist.linear.x = Vx;
+    msg_odom.twist.twist.linear.y = Vy;
+    msg_odom.twist.twist.angular.z = omega;
 
     // Publish odometry message
     RCSOFTCHECK(rcl_publish(&odom_publisher, &msg_odom, NULL));
+
+    // ----- Publish Wheel Speeds as Text -----
+    char speed_text[100];
+    snprintf(speed_text, sizeof(speed_text), "Wheel 1: %.2f m/s, Wheel 2: %.2f m/s, Wheel 3: %.2f m/s",
+              speeds.wheelSpeed1, speeds.wheelSpeed2, speeds.wheelSpeed3);
+
+    // Copy text to message and publish
+    msg_wheel_speeds.data.data = speed_text;
+    msg_wheel_speeds.data.size = strlen(speed_text);
+    msg_wheel_speeds.data.capacity = sizeof(speed_text);
+    
+    RCSOFTCHECK(rcl_publish(&wheel_speeds_publisher, &msg_wheel_speeds, NULL));
   }
 }
 
@@ -106,6 +138,7 @@ void enb_subscription_callback(const void *msgin)
   }
   else{ 
     motorControl.motorsEnabled = false;
+    motorControl.enableMotors(false);
     digitalWrite(LED_PIN, LOW);
   }
 }
@@ -129,7 +162,7 @@ void twist_subscription_callback(const void *msgin)
 // ----- Setup function for micro-ROS node. -----
 void setup()
 {
-  // Initialize micro-ROS transport (e.g., Serial, WiFi)
+  // Initialize micro-ROS transport
   set_microros_transports();
 
   // Configure LED as output
@@ -178,6 +211,13 @@ void setup()
     &support,
     RCL_MS_TO_NS(odom_publish_rate),
     odom_timer_callback));
+
+  // ----- Initialize the new publisher -----
+  RCCHECK(rclc_publisher_init_default(
+    &wheel_speeds_publisher,
+    &node,
+    ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, String),
+    "wheel_speeds"));
 
   // ----- Initialize Executor (single executor for all callbacks) -----
   RCCHECK(rclc_executor_init(&executor, &support.context, 3, &allocator)); // Handles: odom timer + 2 subscribers

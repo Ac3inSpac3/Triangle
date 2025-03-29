@@ -101,18 +101,19 @@ void MotorControl::setMotorPWM(float motorSpeed, int enPin, int dirPin, int pwmC
     motorSpeed = -motorSpeed;    // Use absolute value for PWM calculation
   }
   
-  // Check that the commanded motor speed does not exceed the maximum allowed (setRPM)
-  if (motorSpeed > setRPM) {
-    Serial.print("Error: Commanded motor speed (");
-    Serial.print(motorSpeed);
-    Serial.print(" RPM) exceeds setRPM (");
-    Serial.print(setRPM);
-    Serial.println(" RPM).");
+  // Check that the commanded motor speed does not exceed the maximum allowed (setMotorMaxRPM)
+  if (motorSpeed > setMotorMaxRPM) {
     return;
   }
   
-  // Map the motor speed (in RPM) to a PWM duty cycle within the usable range
-  float dutyCycle = (motorSpeed / setRPM) * (maxDutyCycle - minDutyCycle) + minDutyCycle;
+  // Calculate the PWM duty cycle based on the desired motor speed (in RPM)
+  float dutyCycle = (motorSpeed / setMotorMaxRPM) * (useableRange) + minDutyCycle;
+
+  // Check if the calculated duty cycle is within the expected bounds
+  if (dutyCycle < minDutyCycle || dutyCycle > maxDutyCycle) {
+    return;
+  }
+
   int pwmDutyCycle = (int)dutyCycle;
   ledcWrite(pwmChannel, pwmDutyCycle);
 }
@@ -156,15 +157,10 @@ WheelSpeeds MotorControl::readWheelSpeeds() {
   int raw3 = analogRead(m3Speed);
   
   // Convert ADC readings to motor RPM using your calibration:
-  // Assume that raw values from 1790 to 3085 map linearly to 0 to 2000 motor RPM.
-  float motorRPM1 = ((float)(raw1 - 1790) / (3085 - 1790)) * 2000.0;
-  float motorRPM2 = ((float)(raw2 - 1790) / (3085 - 1790)) * 2000.0;
-  float motorRPM3 = ((float)(raw3 - 1790) / (3085 - 1790)) * 2000.0;
-  
-  // Ensure that we don't get negative RPM values
-  if (motorRPM1 < 0) motorRPM1 = 0;
-  if (motorRPM2 < 0) motorRPM2 = 0;
-  if (motorRPM3 < 0) motorRPM3 = 0;
+  // Assume that raw values from 1790 to 3085 map linearly to 0 to max motor RPM.
+  float motorRPM1 = map(raw1, 1790, 3085, 0, setMotorMaxRPM);
+  float motorRPM2 = map(raw2, 1790, 3085, 0, setMotorMaxRPM);
+  float motorRPM3 = map(raw3, 1790, 3085, 0, setMotorMaxRPM);
   
   float gearRatio = 26.0;
   

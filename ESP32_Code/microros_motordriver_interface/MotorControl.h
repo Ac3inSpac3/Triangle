@@ -39,12 +39,11 @@ class MotorControl {
 
     const int ledPin = 2;
 
-    // Configurable scaling: setRPM is the maximum allowed motor RPM
-    float setRPM = 5000;
-    float maxRPS = setRPM / 60;  // Maximum rotations per second
+    // Configurable scaling factors
+    float setMotorMaxRPM  = 2500;
 
     // Inversion flags for axes
-    bool invertX = true;
+    bool invertX = false;
     bool invertY = true;
     bool invertOmega = false;
 
