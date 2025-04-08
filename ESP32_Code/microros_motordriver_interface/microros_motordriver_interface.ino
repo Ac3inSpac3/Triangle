@@ -79,9 +79,9 @@ void odom_timer_callback(rcl_timer_t *timer, int64_t last_call_time)
     float v3 = speeds.wheelSpeed3;
 
     // Compute Vx, Vy, and omega using the inverse kinematics equations
-    float Vx = ( -v1 - v2 + 2 * v3 ) * (2.0 / 3.0);
-    float Vy = ( sqrt(3) * (v1 - v2) ) * (2.0 / 3.0);
-    float omega = (v1 + v2 + v3) / (3.0 * d);
+    float Vx = ( ( ( -v1 - v2 + 2 * v3 ) * (2.0 / 3.0) ) * (1) ) / 3;
+    float Vy = ( ( ( sqrt(3) * (v1 - v2) ) * (2.0 / 3.0) ) * (-1) ) / 3;
+    float omega = ( (v1 + v2 + v3) / (3* d) ) / 1.5;
     
     // Fill odometry message
     msg_odom.header.stamp.sec = millis() / 1000; // Convert to seconds
@@ -205,7 +205,7 @@ void setup()
     "odom"));
 
   // ----- Initialize Odometry Timer -----
-  const unsigned int odom_publish_rate = 200; // Publish every 100ms
+  const unsigned int odom_publish_rate = 100; // Publish every 100ms
   RCCHECK(rclc_timer_init_default(
     &odom_timer,
     &support,
