@@ -36,4 +36,10 @@ ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0 &
 
 # Start the ROS2 Razor imu node
 #echo "Starting Razor RPLiDAR..."
-ros2 launch sllidar_ros2 view_sllidar_a1_launch.py &
+ros2 launch sllidar_ros2 sllidar_a1_launch.py &
+
+ros2 run tf2_ros static_transform_publisher 0 0 0 0 0 0 base_footprint laser &
+
+ros2 run tf2_ros static_transform_publisher 0 0 0 0 0 0 odom base_footprint &
+
+python3 scripts/odom_to_tf.py &
