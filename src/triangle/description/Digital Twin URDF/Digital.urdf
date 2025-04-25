@@ -1,5 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <robot name="Digital">
+    <!-- BASE FRAMES AND LINKS -->
+
+    <!-- Base link -->
     <link name="BaseFrame">
         <inertial>
             <origin xyz="6.220516227138173e-07 0.015720460645053943 0.003771593011300329" rpy="0.0 0.0 0.0" />
@@ -19,6 +22,9 @@
             </geometry>
         </collision>
     </link>
+    
+    <!-- WHEEL SETS -->
+    <!-- Wheel 1 -->
     <link name="Wheel1">
         <inertial>
             <origin xyz="-7.182858308141247e-10 1.5543122344752193e-17 0.017147542624793656" rpy="0.0 5.551115123125783e-17 0.0" />
@@ -76,6 +82,8 @@
             </geometry>
         </collision>
     </link>
+    
+    <!-- Wheel 2 -->
     <link name="Wheel2">
         <inertial>
             <origin xyz="0.014850208602966947 1.5543122344752193e-17 -0.008573771934433863" rpy="0.0 5.551115123125783e-17 0.0" />
@@ -133,6 +141,8 @@
             </geometry>
         </collision>
     </link>
+    
+    <!-- Wheel 3 -->
     <link name="Wheel3">
         <inertial>
             <origin xyz="-0.014850207884681126 1.7763568394002505e-17 -0.008573770690359766" rpy="0.0 -5.5511151231257815e-17 0.0" />
@@ -190,6 +200,9 @@
             </geometry>
         </collision>
     </link>
+    
+    <!-- SENSOR LINKS -->
+    <!-- Original RPLiDAR Link -->
     <link name="RPLiDAR">
         <inertial>
             <origin xyz="-1.2104397782014283e-13 -1.6008232234468676e-13 0.009999999999995212" rpy="0.0 -0.0 0.0" />
@@ -209,6 +222,46 @@
             </geometry>
         </collision>
     </link>
+    
+    <!-- Laser Link (Required for SLAM - this is needed because your LIDAR node publishes to 'laser' frame) -->
+    <link name="laser">
+        <!-- A minimal representation to act as the scan source -->
+        <visual>
+            <geometry>
+                <cylinder radius="0.0325" length="0.001"/>
+            </geometry>
+            <material name="red">
+                <color rgba="1 0 0 1"/>
+            </material>
+        </visual>
+    </link>
+    
+    <!-- IMU Link (BNO055) -->
+    <link name="imu_link">
+        <visual>
+            <geometry>
+                <box size="0.020 0.025 0.003"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0 0 1 1"/>
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.020 0.025 0.003"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0.002"/>
+            <inertia ixx="0.00000015" ixy="0" ixz="0" iyy="0.00000015" iyz="0" izz="0.00000015"/>
+        </inertial>
+    </link>
+    
+    <!-- Add base_link for compatibility with navigation stack -->
+    <link name="base_link"/>
+    
+    <!-- JOINT DEFINITIONS -->
+    <!-- Wheel joints -->
     <joint name="Gearbox1_Rigid-1" type="fixed">
         <origin xyz="-2.392718752020073e-09 0.01905 -0.04899999585568958" rpy="3.141592653589793 -7.771561172376094e-16 3.141592653589793" />
         <parent link="Gearbox1" />
@@ -261,5 +314,27 @@
         <origin xyz="0.0 0.07440000000000001 0.0" rpy="-1.5707963267948966 -0.0 0.0" />
         <parent link="BaseFrame" />
         <child link="RPLiDAR" />
+    </joint>
+    
+    <!-- New joints for SLAM compatibility -->
+    <!-- Connect base_link to BaseFrame -->
+    <joint name="base_to_baseframe" type="fixed">
+        <parent link="base_link"/>
+        <child link="BaseFrame"/>
+        <origin xyz="0 0 0" rpy="1.5707963267948966 0 0"/>
+    </joint>
+    
+    <!-- Connect RPLiDAR to laser frame (needed because SLAM expects 'laser' frame) -->
+    <joint name="rplidar_to_laser" type="fixed">
+        <parent link="RPLiDAR"/>
+        <child link="laser"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+    
+    <!-- Connect IMU link to the base -->
+    <joint name="base_to_imu" type="fixed">
+        <parent link="BaseFrame"/>
+        <child link="imu_link"/>
+        <origin xyz="0 0.03 0" rpy="0 0 0"/>
     </joint>
 </robot>

@@ -107,7 +107,7 @@ void odom_timer_callback(rcl_timer_t *timer, int64_t last_call_time)
     msg_odom.header.stamp.sec = millis() / 1000; // Convert to seconds
     msg_odom.header.stamp.nanosec = (millis() % 1000) * 1000000; // Convert to nanoseconds
     msg_odom.header.frame_id.data = (char *)"odom";
-    msg_odom.child_frame_id.data = (char *)"base_footprint";
+    msg_odom.child_frame_id.data = (char *)"base_link";
 
     // Dummy position (no integration for now)
     msg_odom.pose.pose.position.x = pos_x;
