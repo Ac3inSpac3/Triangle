@@ -13,7 +13,7 @@ setup(
         # include launch and config
         (f'share/{package_name}/launch',  ['launch/robot.launch.py']),
         (f'share/{package_name}/config',  ['config/ekf.yaml',
-                                           'config/mapper_params_online_async.yaml']),
+                                            'config/mapper_params_online_async.yaml']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,

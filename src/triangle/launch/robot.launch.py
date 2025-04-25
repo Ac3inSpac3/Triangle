@@ -25,7 +25,6 @@ def generate_launch_description():
             output='screen'
         ),
 
-
         # 2) BNO055 IMU
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
@@ -34,46 +33,11 @@ def generate_launch_description():
         ),
 
         # 3) SLLidar A1
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-            os.path.expanduser('~/ros2_ws/src/sllidar_ros2/launch/sllidar_a1_launch.py')
-            )
-        ),
-
-        # 4) Static TFs (lidar & imu)
-        Node(package='tf2_ros', executable='static_transform_publisher',
-            arguments=['0.10','0.0','0.20','0','0','0',
-                        'base_link','laser']),
-        Node(package='tf2_ros', executable='static_transform_publisher',
-            arguments=['0','0','0','0','0','0',
-                        'base_link','imu_link']),
-        Node(package='tf2_ros', executable='static_transform_publisher',
-            arguments=['0','0','0','0','0','0',
-                        'laser','map']),
-
-        # 5) EKF fuse odom+imu into /odometry/filtered
-        Node(
-            package="robot_localization",
-            executable="ekf_node",
-            name="ekf_odom_node",
-            parameters=["ekf_odom.yaml"],
-            remappings=[("/odometry/filtered", "/odometry/filtered_local")]
-        ),
-        Node(
-            package="robot_localization",
-            executable="ekf_node",
-            name="ekf_map_node",
-            parameters=["ekf_map.yaml"],
-            remappings=[("/odometry/filtered", "/odometry/filtered_global")]
-        ),
-        # 6) SLAM Toolbox
-        Node(
-            package='slam_toolbox',
-            executable='async_slam_toolbox_node',
-            name='slam_toolbox',
-            output='screen',
-            #parameters=[slam_config],
-        ),
+        #IncludeLaunchDescription(
+        #    PythonLaunchDescriptionSource(
+        #    os.path.expanduser('~/ros2_ws/src/sllidar_ros2/launch/sllidar_a1_launch.py')
+        #    )
+        #),
 
         # 7) Foxglove Bridge
         Node(package='foxglove_bridge', executable='foxglove_bridge',
