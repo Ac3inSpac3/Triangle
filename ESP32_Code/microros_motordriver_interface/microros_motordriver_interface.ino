@@ -37,6 +37,8 @@ geometry_msgs__msg__Twist msg_twist;
 rcl_publisher_t wheel_speeds_publisher;
 std_msgs__msg__String msg_wheel_speeds;
 
+
+
 // ----- Single Executor -----
 rclc_executor_t executor;
 
@@ -45,6 +47,12 @@ MotorControl motorControl;
 
 // LED pin for status indication
 #define LED_PIN 2  
+
+// Global position estimates
+float pos_x = 0.0;
+float pos_y = 0.0;
+float theta = 0.0;
+uint32_t last_time = 0;
 
 // ----- Macros for Error Handling -----
 #define RCCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){error_loop();}}
@@ -68,6 +76,11 @@ void odom_timer_callback(rcl_timer_t *timer, int64_t last_call_time)
   RCLC_UNUSED(last_call_time);
   if (timer != NULL)
   {
+    // Get the current time
+    uint32_t current_time = millis();
+    float dt = (current_time - last_time) / 1000.0; // Convert ms to seconds
+    last_time = current_time;
+
     // Read actual wheel speeds
     WheelSpeeds speeds = motorControl.readWheelSpeeds();
 
@@ -82,23 +95,29 @@ void odom_timer_callback(rcl_timer_t *timer, int64_t last_call_time)
     float Vx = ( ( ( -v1 - v2 + 2 * v3 ) * (2.0 / 3.0) ) * (1) ) / 3;
     float Vy = ( ( ( sqrt(3) * (v1 - v2) ) * (2.0 / 3.0) ) * (-1) ) / 3;
     float omega = ( (v1 + v2 + v3) / (3* d) ) / 1.5;
+
+    // Integrate velocity to estimate position
+    pos_x += Vx * dt;
+    pos_y += Vy * dt;
+    theta += omega * dt;
+
     
     // Fill odometry message
     msg_odom.header.stamp.sec = millis() / 1000; // Convert to seconds
     msg_odom.header.stamp.nanosec = (millis() % 1000) * 1000000; // Convert to nanoseconds
     msg_odom.header.frame_id.data = (char *)"odom";
-    msg_odom.child_frame_id.data = (char *)"base_link";
+    msg_odom.child_frame_id.data = (char *)"base_footprint";
 
     // Dummy position (no integration for now)
-    msg_odom.pose.pose.position.x = 0.0;
-    msg_odom.pose.pose.position.y = 0.0;
+    msg_odom.pose.pose.position.x = pos_x;
+    msg_odom.pose.pose.position.y = pos_y;
     msg_odom.pose.pose.position.z = 0.0;
 
     // Dummy orientation (no rotation tracking yet)
     msg_odom.pose.pose.orientation.x = 0.0;
     msg_odom.pose.pose.orientation.y = 0.0;
-    msg_odom.pose.pose.orientation.z = 0.0;
-    msg_odom.pose.pose.orientation.w = 1.0;
+    msg_odom.pose.pose.orientation.z = sin(theta / 2.0);
+    msg_odom.pose.pose.orientation.w = cos(theta / 2.0);
 
     // Set computed velocities
     msg_odom.twist.twist.linear.x = Vx;
@@ -205,7 +224,7 @@ void setup()
     "odom"));
 
   // ----- Initialize Odometry Timer -----
-  const unsigned int odom_publish_rate = 100; // Publish every 100ms
+  const unsigned int odom_publish_rate = 200; // Publish every 100ms
   RCCHECK(rclc_timer_init_default(
     &odom_timer,
     &support,
