@@ -128,6 +128,12 @@ sudo apt install ros-jazzy-ros-base
 source /opt/ros/jazzy/setup.bash
 ```
 
+10. Install other ROS2 packages:
+```sh
+sudo apt update
+sudo apt install ros-jazzy-slam-toolbox ros-jazzy-navigation2 ros-jazzy-nav2-bringup
+```
+
 10. Verify installation:
 TBD
 
@@ -140,15 +146,16 @@ cd ~/ros2_ws
 
 2. Install required packages:
 ```sh
-mkdir ~/ros2_ws/src
 cd ~/ros2_ws/src
 git clone https://github.com/micro-ROS/micro-ROS-Agent -b jazzy
 git clone https://github.com/micro-ROS/micro_ros_msgs -b jazzy
+git clone https://github.com/Slamtec/sllidar_ros2.git
+git clone https://github.com/flynneva/bno055.git
 
 # More to be added as project progresses
 ```
 
-3. Install FOXGLOVE Monitoring (Optional)
+3. Install FOXGLOVE Monitoring
 ```sh
 sudo apt install ros-$ROS_DISTRO-foxglove-bridge
 ```

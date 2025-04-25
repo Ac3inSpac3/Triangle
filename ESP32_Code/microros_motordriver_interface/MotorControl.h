@@ -8,6 +8,9 @@ struct WheelSpeeds {
   float wheelSpeed1;
   float wheelSpeed2;
   float wheelSpeed3;
+  float adc1;
+  float adc2;
+  float adc3;
 };
 
 class MotorControl {

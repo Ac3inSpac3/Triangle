@@ -84,17 +84,18 @@ void odom_timer_callback(rcl_timer_t *timer, int64_t last_call_time)
     // Read actual wheel speeds
     WheelSpeeds speeds = motorControl.readWheelSpeeds();
 
-    float d = 0.16;  // Distance from center to wheels (meters)
+    float L = 0.16; // Distance from center to each wheel
+    float r = 0.055; // Wheel radius
 
     // Extract the measured wheel speeds in m/s
-    float v1 = speeds.wheelSpeed1;
-    float v2 = speeds.wheelSpeed2;
-    float v3 = speeds.wheelSpeed3;
+    float w1 = speeds.wheelSpeed1;
+    float w2 = speeds.wheelSpeed2;
+    float w3 = speeds.wheelSpeed3;
 
-    // Compute Vx, Vy, and omega using the inverse kinematics equations
-    float Vx = ( ( ( -v1 - v2 + 2 * v3 ) * (2.0 / 3.0) ) * (1) ) / 3;
-    float Vy = ( ( ( sqrt(3) * (v1 - v2) ) * (2.0 / 3.0) ) * (-1) ) / 3;
-    float omega = ( (v1 + v2 + v3) / (3* d) ) / 1.5;
+    // Inverse of the Jacobian for a 3-wheel omni base:
+    float Vx = (-w1 + w2 + w3) / 3.0;
+    float Vy = (sqrt(3) * (w2 - w1)) / 3.0;
+    float omega = (w1 + w2 + w3) / (3 * L);
 
     // Integrate velocity to estimate position
     pos_x += Vx * dt;
@@ -129,8 +130,9 @@ void odom_timer_callback(rcl_timer_t *timer, int64_t last_call_time)
 
     // ----- Publish Wheel Speeds as Text -----
     char speed_text[100];
-    snprintf(speed_text, sizeof(speed_text), "Wheel 1: %.2f m/s, Wheel 2: %.2f m/s, Wheel 3: %.2f m/s",
-              speeds.wheelSpeed1, speeds.wheelSpeed2, speeds.wheelSpeed3);
+    snprintf(speed_text, sizeof(speed_text), "Wheel 1: %.2f m/s, Wheel 2: %.2f m/s, Wheel 3: %.2f m/s, ADC1: %.2f, ADC2: %.2f, ADC3: %.2f,",
+              speeds.wheelSpeed1, speeds.wheelSpeed2, speeds.wheelSpeed3,
+              speeds.adc1, speeds.adc2, speeds.adc3);
 
     // Copy text to message and publish
     msg_wheel_speeds.data.data = speed_text;
