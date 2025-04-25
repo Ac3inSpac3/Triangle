@@ -12,9 +12,18 @@ from lifecycle_msgs.msg import State
 def generate_launch_description():
     triangle_dir = os.path.expanduser('~/ros2_ws/src/triangle')
     config_dir = os.path.join(triangle_dir, 'config')
+    launch_dir = os.path.join(triangle_dir, 'launch')
 
-    ekf_config = os.path.join(config_dir, 'ekf.yaml')
-    slam_config = os.path.join(config_dir, 'mapper_params_online_async.yaml')
+    imu_params = os.path.join(config_dir, 'bno055_params_i2c.yaml')
+    ekf_params = os.path.join(config_dir, 'ekf_params.yaml')
+
+    # Include the SLAM launch file
+    slam_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(launch_dir, 'slam.launch.py')
+        )
+    )
+
     return LaunchDescription([
         # 1) Micro‑ROS agent
         Node(
@@ -25,22 +34,50 @@ def generate_launch_description():
             output='screen'
         ),
 
-        # 2) BNO055 IMU
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                os.path.expanduser('~/ros2_ws/src/triangle/launch/bno055.launch.py')
-            )
+        # 2) BNO055 IMU Node
+        Node(
+            package='bno055',
+            executable='bno055',
+            name='bno055',
+            #output='screen',
+            parameters=[imu_params],
         ),
 
-        # 3) SLLidar A1
-        #IncludeLaunchDescription(
-        #    PythonLaunchDescriptionSource(
-        #    os.path.expanduser('~/ros2_ws/src/sllidar_ros2/launch/sllidar_a1_launch.py')
-        #    )
-        #),
+        # 3) SLLIDAR A1 Node
+        Node(
+            package='sllidar_ros2',
+            executable='sllidar_node',
+            name='sllidar_node',
+            output='screen',
+            parameters=[{
+                'serial_port': '/dev/ttyUSB0',
+                'serial_baudrate': 115200,
+                'frame_id': 'laser',
+                'inverted': False,
+                'angle_compensate': True
+            }]
+        ),
+
+        
+
+        # 5) Add Robot Localization Node
+        Node(
+            package='robot_localization',
+            executable='ekf_node',
+            name='ekf_filter_node',
+            output='screen',
+            parameters=[ekf_params]
+        ),
+
+        # 4) Include SLAM launch file
+        slam_launch,
+        
+        # Other nodes to be added here
 
         # 7) Foxglove Bridge
-        Node(package='foxglove_bridge', executable='foxglove_bridge',
+        Node(
+            package='foxglove_bridge',
+            executable='foxglove_bridge',
             name='foxglove_bridge'
         ),
     ])

@@ -1,0 +1,340 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="Digital">
+    <!-- BASE FRAMES AND LINKS -->
+
+    <!-- Base link -->
+    <link name="BaseFrame">
+        <inertial>
+            <origin xyz="6.220516227138173e-07 0.015720460645053943 0.003771593011300329" rpy="0.0 0.0 0.0" />
+            <mass value="8.741348768419334" />
+            <inertia ixx="0.05878328648875511" iyy="0.10720832008945891" izz="0.05729448458823833" ixy="8.556860355420218e-08" iyz="-0.0006208696444277885" ixz="-3.941352884719564e-06" />
+        </inertial>
+        <visual name="BaseFrame_visual">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="meshes/BaseFrame.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="BaseFrame_collision">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="meshes/BaseFrame.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    
+    <!-- WHEEL SETS -->
+    <!-- Wheel 1 -->
+    <link name="Wheel1">
+        <inertial>
+            <origin xyz="-7.182858308141247e-10 1.5543122344752193e-17 0.017147542624793656" rpy="0.0 5.551115123125783e-17 0.0" />
+            <mass value="2.006420398400055" />
+            <inertia ixx="0.001469647893885064" iyy="0.001469647893808726" izz="0.0026279102091307425" ixy="1.6185190373569832e-18" iyz="1.0686337297429578e-18" ixz="4.96564594998361e-17" />
+        </inertial>
+        <visual name="Wheel1_visual">
+            <origin xyz="-7.18276149792724e-10 0.01905 -0.15028798124409087" rpy="3.141592653589793 1.1102230246251568e-16 0.0" />
+            <geometry>
+                <mesh filename="meshes/Wheel1.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Wheel1_collision">
+            <origin xyz="-7.18276149792724e-10 0.01905 -0.15028798124409087" rpy="3.141592653589793 1.1102230246251568e-16 0.0" />
+            <geometry>
+                <mesh filename="meshes/Wheel1.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="Gearbox1">
+        <inertial>
+            <origin xyz="7.182758210433349e-10 0.01905 -0.024499996718548064" rpy="0.0 -0.0 0.0" />
+            <mass value="0.5583617865000003" />
+            <inertia ixx="0.00017926251685731348" iyy="0.00017926251685731337" izz="0.00013508725881687786" ixy="-2.168404344971005e-19" iyz="3.755786496842899e-19" ixz="-3.5236570605778894e-19" />
+        </inertial>
+        <visual name="Gearbox1_visual">
+            <origin xyz="7.182761496693502e-10 0.0 -0.15028798124409085" rpy="0.0 1.047197551196598 0.0" />
+            <geometry>
+                <mesh filename="meshes/Gearbox1.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Gearbox1_collision">
+            <origin xyz="7.182761496693502e-10 0.0 -0.15028798124409085" rpy="0.0 1.047197551196598 0.0" />
+            <geometry>
+                <mesh filename="meshes/Gearbox1.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="Motor1">
+        <inertial>
+            <origin xyz="-3.110994586386084e-09 -6.661338147750939e-18 0.025500000862858557" rpy="0.0 -5.551115123125784e-17 0.0" />
+            <mass value="0.4075066645121547" />
+            <inertia ixx="0.000121335109358496" iyy="0.00012133510935849337" izz="6.60160796509679e-05" ixy="3.2421776383058307e-20" iyz="2.691044877785578e-19" ixz="-2.371692252312041e-19" />
+        </inertial>
+        <visual name="Motor1_visual">
+            <origin xyz="-3.110994901689423e-09 -0.01905 0.10128798538840127" rpy="3.141592653589793 -1.0471975511965979 3.141592653589793" />
+            <geometry>
+                <mesh filename="meshes/Motor1.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Motor1_collision">
+            <origin xyz="-3.110994901689423e-09 -0.01905 0.10128798538840127" rpy="3.141592653589793 -1.0471975511965979 3.141592653589793" />
+            <geometry>
+                <mesh filename="meshes/Motor1.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    
+    <!-- Wheel 2 -->
+    <link name="Wheel2">
+        <inertial>
+            <origin xyz="0.014850208602966947 1.5543122344752193e-17 -0.008573771934433863" rpy="0.0 5.551115123125783e-17 0.0" />
+            <mass value="2.006420398400055" />
+            <inertia ixx="0.002338344630319266" iyy="0.001469647893808726" izz="0.0017592134726965368" ixy="-2.9559169481946623e-21" iyz="-1.739843274314035e-18" ixz="-0.0005015422946244938" />
+        </inertial>
+        <visual name="Wheel2_visual">
+            <origin xyz="-0.13015320856344764 0.01905 0.07514398999999997" rpy="0.0 1.0471975511965979 3.141592653589793" />
+            <geometry>
+                <mesh filename="meshes/Wheel2.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Wheel2_collision">
+            <origin xyz="-0.13015320856344764 0.01905 0.07514398999999997" rpy="0.0 1.0471975511965979 3.141592653589793" />
+            <geometry>
+                <mesh filename="meshes/Wheel2.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="Gearbox2">
+        <inertial>
+            <origin xyz="-4.174438572590589e-16 0.01905 -0.024499995474457244" rpy="0.0 -0.0 0.0" />
+            <mass value="0.5583617865000003" />
+            <inertia ixx="0.00017926251685731337" iyy="0.0001792625168573151" izz="0.00013508725881687745" ixy="-8.818923851428391e-20" iyz="2.168404344971009e-19" ixz="-4.205051283485158e-19" />
+        </inertial>
+        <visual name="Gearbox2_visual">
+            <origin xyz="0.0 0.0 -0.15028798000000002" rpy="0.0 1.0471975511965974 0.0" />
+            <geometry>
+                <mesh filename="meshes/Gearbox2.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Gearbox2_collision">
+            <origin xyz="0.0 0.0 -0.15028798000000002" rpy="0.0 1.0471975511965974 0.0" />
+            <geometry>
+                <mesh filename="meshes/Gearbox2.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="Motor2">
+        <inertial>
+            <origin xyz="-0.022083643877268404 -6.661338147750939e-18 -0.012749997737228309" rpy="0.0 -5.551115123125784e-17 0.0" />
+            <mass value="0.4075066645121547" />
+            <inertia ixx="7.984583707784952e-05" iyy="0.00012133510935849337" izz="0.00010750535193161393" ixy="-2.86329525777864e-19" iyz="-1.5458401713693968e-19" ixz="-2.395384251971233e-05" />
+        </inertial>
+        <visual name="Motor2_visual">
+            <origin xyz="-0.08771796377801014 -0.01905 -0.05064398999999997" rpy="3.141592653589793 1.047197551196598 3.141592653589793" />
+            <geometry>
+                <mesh filename="meshes/Motor2.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Motor2_collision">
+            <origin xyz="-0.08771796377801014 -0.01905 -0.05064398999999997" rpy="3.141592653589793 1.047197551196598 3.141592653589793" />
+            <geometry>
+                <mesh filename="meshes/Motor2.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    
+    <!-- Wheel 3 -->
+    <link name="Wheel3">
+        <inertial>
+            <origin xyz="-0.014850207884681126 1.7763568394002505e-17 -0.008573770690359766" rpy="0.0 -5.5511151231257815e-17 0.0" />
+            <mass value="2.006420398400055" />
+            <inertia ixx="0.0023383446303193644" iyy="0.0014696478938087051" izz="0.0017592134726964349" ixy="-1.0686337297429578e-18" iyz="1.618519037356983e-18" ixz="0.0005015422946244375" />
+        </inertial>
+        <visual name="Wheel3_visual">
+            <origin xyz="0.13015320928172383 0.019050000000000004 0.07514399124409088" rpy="0.0 -1.047197551196598 3.141592653589793" />
+            <geometry>
+                <mesh filename="meshes/Wheel3.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Wheel3_collision">
+            <origin xyz="0.13015320928172383 0.019050000000000004 0.07514399124409088" rpy="0.0 -1.047197551196598 3.141592653589793" />
+            <geometry>
+                <mesh filename="meshes/Wheel3.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="Gearbox3">
+        <inertial>
+            <origin xyz="-7.182765937585601e-10 0.01905 -0.02449999671854808" rpy="0.0 -0.0 0.0" />
+            <mass value="0.5583617865000003" />
+            <inertia ixx="0.00017926251685731535" iyy="0.00017926251685731337" izz="0.00013508725881687818" ixy="-2.671584324357392e-19" iyz="4.0462975933924594e-19" ixz="-8.809142651444724e-19" />
+        </inertial>
+        <visual name="Gearbox3_visual">
+            <origin xyz="-7.182762562507606e-10 0.0 -0.15028798124409087" rpy="0.0 1.0471975511965979 0.0" />
+            <geometry>
+                <mesh filename="meshes/Gearbox3.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Gearbox3_collision">
+            <origin xyz="-7.182762562507606e-10 0.0 -0.15028798124409087" rpy="0.0 1.0471975511965979 0.0" />
+            <geometry>
+                <mesh filename="meshes/Gearbox3.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="Motor3">
+        <inertial>
+            <origin xyz="0.02208364698826296 -6.661338147750939e-18 -0.01275000312563022" rpy="0.0 5.551115123125783e-17 0.0" />
+            <mass value="0.4075066645121547" />
+            <inertia ixx="7.984583707784998e-05" iyy="0.00012133510935849294" izz="0.00010750535193161376" ixy="2.0231487966962285e-19" iyz="-1.3357921621786973e-19" ixz="2.39538425197127e-05" />
+        </inertial>
+        <visual name="Motor3_visual">
+            <origin xyz="0.08771796688900507 -0.01905 -0.05064399538840131" rpy="0.0 5.5511151231257815e-17 0.0" />
+            <geometry>
+                <mesh filename="meshes/Motor3.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Motor3_collision">
+            <origin xyz="0.08771796688900507 -0.01905 -0.05064399538840131" rpy="0.0 5.5511151231257815e-17 0.0" />
+            <geometry>
+                <mesh filename="meshes/Motor3.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    
+    <!-- SENSOR LINKS -->
+    <!-- Original RPLiDAR Link -->
+    <link name="RPLiDAR">
+        <inertial>
+            <origin xyz="-1.2104397782014283e-13 -1.6008232234468676e-13 0.009999999999995212" rpy="0.0 -0.0 0.0" />
+            <mass value="0.6042068071017083" />
+            <inertia ixx="0.00020517856157828505" iyy="0.00020517856157829546" izz="0.00037007666934979326" ixy="-8.924415590375263e-20" iyz="-3.54477833706305e-18" ixz="-2.6773249932504712e-20" />
+        </inertial>
+        <visual name="RPLiDAR_visual">
+            <origin xyz="0.0 0.0 -0.07440000000000001" rpy="1.5707963267948966 -0.0 0.0" />
+            <geometry>
+                <mesh filename="meshes/RPLiDAR.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="RPLiDAR_collision">
+            <origin xyz="0.0 0.0 -0.07440000000000001" rpy="1.5707963267948966 -0.0 0.0" />
+            <geometry>
+                <mesh filename="meshes/RPLiDAR.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    
+    <!-- Laser Link (Required for SLAM - this is needed because your LIDAR node publishes to 'laser' frame) -->
+    <link name="laser">
+        <!-- A minimal representation to act as the scan source -->
+        <visual>
+            <geometry>
+                <cylinder radius="0.0325" length="0.001"/>
+            </geometry>
+            <material name="red">
+                <color rgba="1 0 0 1"/>
+            </material>
+        </visual>
+    </link>
+    
+    <!-- IMU Link (BNO055) -->
+    <link name="imu_link">
+        <visual>
+            <geometry>
+                <box size="0.020 0.025 0.003"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0 0 1 1"/>
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.020 0.025 0.003"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0.002"/>
+            <inertia ixx="0.00000015" ixy="0" ixz="0" iyy="0.00000015" iyz="0" izz="0.00000015"/>
+        </inertial>
+    </link>
+    
+    <!-- Add base_link for compatibility with navigation stack -->
+    <link name="base_link"/>
+    
+    <!-- JOINT DEFINITIONS -->
+    <!-- Wheel joints -->
+    <joint name="Gearbox1_Rigid-1" type="fixed">
+        <origin xyz="-2.392718752020073e-09 0.01905 -0.04899999585568958" rpy="3.141592653589793 -7.771561172376094e-16 3.141592653589793" />
+        <parent link="Gearbox1" />
+        <child link="Motor1" />
+    </joint>
+    <joint name="BaseFrame_Rigid-2" type="fixed">
+        <origin xyz="-0.13015321 0.0 0.07514399000000001" rpy="0.0 -1.0471975511965987 0.0" />
+        <parent link="BaseFrame" />
+        <child link="Gearbox1" />
+    </joint>
+    <joint name="Gearbox2_Rigid-18" type="fixed">
+        <origin xyz="0.0 0.01905 -0.049" rpy="0.0 -1.0471975511965979 0.0" />
+        <parent link="Gearbox2" />
+        <child link="Motor2" />
+    </joint>
+    <joint name="BaseFrame_Rigid-19" type="fixed">
+        <origin xyz="0.0 0.0 -0.15028798000000002" rpy="3.141592653589793 9.014058568467967e-16 3.141592653589793" />
+        <parent link="BaseFrame" />
+        <child link="Gearbox2" />
+    </joint>
+    <joint name="Gearbox3_Rigid-20" type="fixed">
+        <origin xyz="2.3927187164929367e-09 0.01905 -0.04899999585568958" rpy="0.0 1.047197551196598 0.0" />
+        <parent link="Gearbox3" />
+        <child link="Motor3" />
+    </joint>
+    <joint name="BaseFrame_Rigid-21" type="fixed">
+        <origin xyz="0.13015321 0.0 0.07514399000000001" rpy="0.0 1.0471975511965972 0.0" />
+        <parent link="BaseFrame" />
+        <child link="Gearbox3" />
+    </joint>
+    <joint name="Gearbox1_Revolute-25" type="continuous">
+        <origin xyz="0.0 0.01905 0.0" rpy="0.0 -8.326672684688672e-16 3.141592653589793" />
+        <parent link="Gearbox1" />
+        <child link="Wheel1" />
+        <axis xyz="-2.0189221949795666e-07 0.0 0.9999996503124187" />
+    </joint>
+    <joint name="Gearbox2_Revolute-26" type="continuous">
+        <origin xyz="0.0 0.01905 0.0" rpy="3.141592653589793 -1.0471975511965976 0.0" />
+        <parent link="Gearbox2" />
+        <child link="Wheel2" />
+        <axis xyz="0.8660254037844388 0.0 -0.4999999999999999" />
+    </joint>
+    <joint name="Gearbox3_Revolute-27" type="continuous">
+        <origin xyz="0.0 0.01905 0.0" rpy="3.141592653589793 1.047197551196598 0.0" />
+        <parent link="Gearbox3" />
+        <child link="Wheel3" />
+        <axis xyz="-0.8660252018922192 0.0 -0.49999965031241866" />
+    </joint>
+    <joint name="BaseFrame_Rigid-28" type="fixed">
+        <origin xyz="0.0 0.07440000000000001 0.0" rpy="-1.5707963267948966 -0.0 0.0" />
+        <parent link="BaseFrame" />
+        <child link="RPLiDAR" />
+    </joint>
+    
+    <!-- New joints for SLAM compatibility -->
+    <!-- Connect base_link to BaseFrame -->
+    <joint name="base_to_baseframe" type="fixed">
+        <parent link="base_link"/>
+        <child link="BaseFrame"/>
+        <origin xyz="0 0 0" rpy="1.5707963267948966 0 0"/>
+    </joint>
+    
+    <!-- Connect RPLiDAR to laser frame (needed because SLAM expects 'laser' frame) -->
+    <joint name="rplidar_to_laser" type="fixed">
+        <parent link="RPLiDAR"/>
+        <child link="laser"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+    
+    <!-- Connect IMU link to the base -->
+    <joint name="base_to_imu" type="fixed">
+        <parent link="BaseFrame"/>
+        <child link="imu_link"/>
+        <origin xyz="0 0.03 0" rpy="0 0 0"/>
+    </joint>
+</robot>
