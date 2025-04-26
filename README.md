@@ -128,6 +128,12 @@ sudo apt install ros-jazzy-ros-base
 source /opt/ros/jazzy/setup.bash
 ```
 
+10. Install other ROS2 packages:
+```sh
+sudo apt update
+sudo apt install ros-jazzy-slam-toolbox ros-jazzy-navigation2 ros-jazzy-nav2-bringup ros-jazzy-tf-transformations ros-jazzy-robot-state-publisher ros-jazzy-robot-localization
+```
+
 10. Verify installation:
 TBD
 
@@ -140,15 +146,16 @@ cd ~/ros2_ws
 
 2. Install required packages:
 ```sh
-mkdir ~/ros2_ws/src
 cd ~/ros2_ws/src
 git clone https://github.com/micro-ROS/micro-ROS-Agent -b jazzy
 git clone https://github.com/micro-ROS/micro_ros_msgs -b jazzy
+git clone https://github.com/Slamtec/sllidar_ros2.git
+git clone https://github.com/flynneva/bno055.git
 
 # More to be added as project progresses
 ```
 
-3. Install FOXGLOVE Monitoring (Optional)
+3. Install FOXGLOVE Monitoring
 ```sh
 sudo apt install ros-$ROS_DISTRO-foxglove-bridge
 ```
@@ -188,18 +195,7 @@ ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyUSB0
 
 ### Working with GitHub through Terminal on the Pi5
 
-#### Understanding `git pull` vs `git fetch`
-- Use `git fetch` when you want to check for updates without modifying your local files. This is useful if you want to review changes before merging.
-- Use `git pull` when you are ready to update your local branch with the latest changes from the remote repository.
-
-**When to use `git fetch`**
-```sh
-git fetch origin  # Retrieve changes from remote
-git status  # Check what has changed before merging
-git merge origin/main  # Merge if needed
-```
-
-**When to use `git pull`**
+#### Pull changes using `git pull'
 ```sh
 git pull origin main  # Fetch and automatically merge changes
 ```
@@ -211,29 +207,11 @@ git checkout main  # Switch back to the main branch
 git merge feature-branch  # Merge feature-branch into main
 ```
 
-#### Handling Merge Conflicts
+#### Commiting Changes
 ```sh
 git add .  # Stage resolved files
-git commit -m "Resolved merge conflict"
+git commit -m "Commit message"
 git push origin main  # Push resolved changes
-```
-
-#### Resetting Unwanted Changes
-```sh
-git checkout -- filename  # Discard changes in a file
-git reset --hard HEAD  # Discard all uncommitted changes
-```
-
-#### Stashing Temporary Changes
-```sh
-git stash  # Save uncommitted changes
-git checkout main  # Switch branches
-git stash pop  # Restore saved changes
-```
-
-#### Viewing Log History
-```sh
-git log --oneline --graph --all --decorate  # View commit history
 ```
 
 ### General ROS2 Practices

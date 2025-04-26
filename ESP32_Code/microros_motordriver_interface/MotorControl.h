@@ -8,6 +8,9 @@ struct WheelSpeeds {
   float wheelSpeed1;
   float wheelSpeed2;
   float wheelSpeed3;
+  float adc1;
+  float adc2;
+  float adc3;
 };
 
 class MotorControl {
@@ -43,7 +46,7 @@ class MotorControl {
     float setMotorMaxRPM  = 2500;
 
     // Inversion flags for axes
-    bool invertX = false;
+    bool invertX = true;
     bool invertY = true;
     bool invertOmega = false;
 

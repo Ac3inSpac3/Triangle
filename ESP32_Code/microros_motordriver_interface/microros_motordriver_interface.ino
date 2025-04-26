@@ -84,17 +84,18 @@ void odom_timer_callback(rcl_timer_t *timer, int64_t last_call_time)
     // Read actual wheel speeds
     WheelSpeeds speeds = motorControl.readWheelSpeeds();
 
-    float d = 0.16;  // Distance from center to wheels (meters)
+    float L = 0.16; // Distance from center to each wheel
+    float r = 0.055; // Wheel radius
 
     // Extract the measured wheel speeds in m/s
-    float v1 = speeds.wheelSpeed1;
-    float v2 = speeds.wheelSpeed2;
-    float v3 = speeds.wheelSpeed3;
+    float w1 = speeds.wheelSpeed1;
+    float w2 = speeds.wheelSpeed2;
+    float w3 = speeds.wheelSpeed3;
 
-    // Compute Vx, Vy, and omega using the inverse kinematics equations
-    float Vx = ( ( ( -v1 - v2 + 2 * v3 ) * (2.0 / 3.0) ) * (1) ) / 3;
-    float Vy = ( ( ( sqrt(3) * (v1 - v2) ) * (2.0 / 3.0) ) * (-1) ) / 3;
-    float omega = ( (v1 + v2 + v3) / (3* d) ) / 1.5;
+    // Inverse of the Jacobian for a 3-wheel omni base:
+    float Vx = (-w1 + w2 + w3) / 3.0;
+    float Vy = (sqrt(3) * (w2 - w1)) / 3.0;
+    float omega = (w1 + w2 + w3) / (3 * L);
 
     // Integrate velocity to estimate position
     pos_x += Vx * dt;
@@ -106,22 +107,20 @@ void odom_timer_callback(rcl_timer_t *timer, int64_t last_call_time)
     msg_odom.header.stamp.sec = millis() / 1000; // Convert to seconds
     msg_odom.header.stamp.nanosec = (millis() % 1000) * 1000000; // Convert to nanoseconds
     msg_odom.header.frame_id.data = (char *)"odom";
-    msg_odom.child_frame_id.data = (char *)"base_footprint";
+    msg_odom.child_frame_id.data = (char *)"base_link";
 
-    // Dummy position (no integration for now)
-    msg_odom.pose.pose.position.x = pos_x;
-    msg_odom.pose.pose.position.y = pos_y;
+    msg_odom.pose.pose.position.x = pos_y;
+    msg_odom.pose.pose.position.y = -pos_x;
     msg_odom.pose.pose.position.z = 0.0;
 
-    // Dummy orientation (no rotation tracking yet)
     msg_odom.pose.pose.orientation.x = 0.0;
     msg_odom.pose.pose.orientation.y = 0.0;
     msg_odom.pose.pose.orientation.z = sin(theta / 2.0);
     msg_odom.pose.pose.orientation.w = cos(theta / 2.0);
 
     // Set computed velocities
-    msg_odom.twist.twist.linear.x = Vx;
-    msg_odom.twist.twist.linear.y = Vy;
+    msg_odom.twist.twist.linear.x = Vy;
+    msg_odom.twist.twist.linear.y = -Vx;
     msg_odom.twist.twist.angular.z = omega;
 
     // Publish odometry message
@@ -129,8 +128,9 @@ void odom_timer_callback(rcl_timer_t *timer, int64_t last_call_time)
 
     // ----- Publish Wheel Speeds as Text -----
     char speed_text[100];
-    snprintf(speed_text, sizeof(speed_text), "Wheel 1: %.2f m/s, Wheel 2: %.2f m/s, Wheel 3: %.2f m/s",
-              speeds.wheelSpeed1, speeds.wheelSpeed2, speeds.wheelSpeed3);
+    snprintf(speed_text, sizeof(speed_text), "Wheel 1: %.2f m/s, Wheel 2: %.2f m/s, Wheel 3: %.2f m/s, ADC1: %.2f, ADC2: %.2f, ADC3: %.2f,",
+              speeds.wheelSpeed1, speeds.wheelSpeed2, speeds.wheelSpeed3,
+              speeds.adc1, speeds.adc2, speeds.adc3);
 
     // Copy text to message and publish
     msg_wheel_speeds.data.data = speed_text;

@@ -12,8 +12,7 @@ setup(
         ('share/' + package_name, ['package.xml']),
         # include launch and config
         (f'share/{package_name}/launch',  ['launch/robot.launch.py']),
-        (f'share/{package_name}/config',  ['config/ekf.yaml',
-                                           'config/mapper_params_online_async.yaml']),
+        (f'share/{package_name}/config',  ['config/bno055_params_i2c.yaml']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,

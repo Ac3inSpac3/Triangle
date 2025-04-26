@@ -58,7 +58,7 @@ void MotorControl::updateMotors(float Vx, float Vy, float omega) {
   setMotorPWM(motorSpeed3, m3En, m3Dir, m3Channel); // Motor 3
 }
 
-void MotorControl::computeMotorSpeeds(float Vx, float Vy, float omega) {
+void MotorControl::computeMotorSpeeds(float Vy, float Vx, float omega) {
   // Apply inversion settings if required
   if (invertX) Vx = -Vx;
   if (invertY) Vy = -Vy;
@@ -73,8 +73,8 @@ void MotorControl::computeMotorSpeeds(float Vx, float Vy, float omega) {
   float omega_wheel1 = (1 / r) * (-0.5 * Vx + (sqrt(3) / 2) * Vy + d * omega);
   float omega_wheel2 = (1 / r) * (-0.5 * Vx - (sqrt(3) / 2) * Vy + d * omega);
   float omega_wheel3 = (1 / r) * (Vx + d * omega);
-  
-  // Convert wheel speeds (rad/s) to wheel RPM
+
+    // Convert wheel speeds (rad/s) to wheel RPM
   float wheelRPM1 = (omega_wheel1 / (2 * PI)) * 60;
   float wheelRPM2 = (omega_wheel2 / (2 * PI)) * 60;
   float wheelRPM3 = (omega_wheel3 / (2 * PI)) * 60;
@@ -155,12 +155,16 @@ WheelSpeeds MotorControl::readWheelSpeeds() {
   int raw1 = analogRead(m1Speed);
   int raw2 = analogRead(m2Speed);
   int raw3 = analogRead(m3Speed);
+
+  speeds.adc1 = raw1;
+  speeds.adc2 = raw2;
+  speeds.adc3 = raw3;
   
   // Convert ADC readings to motor RPM using your calibration:
   // Assume that raw values from 1790 to 3085 map linearly to 0 to max motor RPM.
-  float motorRPM1 = map(raw1, 1790, 3085, 0, setMotorMaxRPM);
-  float motorRPM2 = map(raw2, 1790, 3085, 0, setMotorMaxRPM);
-  float motorRPM3 = map(raw3, 1790, 3085, 0, setMotorMaxRPM);
+  float motorRPM1 = map(raw1, 1819, 3085, 0, setMotorMaxRPM);
+  float motorRPM2 = map(raw2, 1819, 3085, 0, setMotorMaxRPM);
+  float motorRPM3 = map(raw3, 1819, 3085, 0, setMotorMaxRPM);
   
   float gearRatio = 26.0;
   
@@ -170,10 +174,13 @@ WheelSpeeds MotorControl::readWheelSpeeds() {
   float wheelRPM3 = motorRPM3 / gearRatio;
   
   // Convert wheel RPM to linear speed (m/s) using wheel circumference
-  float wheelCircumference = 2 * PI * 0.055; // Wheel radius = 0.055 m
-  speeds.wheelSpeed1 = (wheelRPM1 * wheelCircumference) / 60.0;
-  speeds.wheelSpeed2 = (wheelRPM2 * wheelCircumference) / 60.0;
-  speeds.wheelSpeed3 = (wheelRPM3 * wheelCircumference) / 60.0;
+  float wheelCircumference = 2 * PI * 0.06; // Wheel radius = 0.055 m
+  float speedThreshold = 0.02; // Minimum speed threshold to filter jitter
+
+  // Apply threshold filtering while preserving sign
+  speeds.wheelSpeed1 = (std::abs(wheelRPM1 * wheelCircumference / 60.0) < speedThreshold) ? 0 : (wheelRPM1 * wheelCircumference / 60.0);
+  speeds.wheelSpeed2 = (std::abs(wheelRPM2 * wheelCircumference / 60.0) < speedThreshold) ? 0 : (wheelRPM2 * wheelCircumference / 60.0);
+  speeds.wheelSpeed3 = (std::abs(wheelRPM3 * wheelCircumference / 60.0) < speedThreshold) ? 0 : (wheelRPM3 * wheelCircumference / 60.0);
   
   return speeds;
 }
