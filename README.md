@@ -55,10 +55,9 @@ ros2_ws/
 
 - [x] Remote control via keyboard control
 - [x] Remote monitoring (e.g. Web server)
-- [ ] LiDAR integration
-- [ ] IMU Integration
+- [x] LiDAR integration
+- [x] IMU Integration
 - [ ] Autonomous navigation
-- [ ] Kinect 360 integration
 - [ ] Advanced navigation
 
 ## Installation & Setup
