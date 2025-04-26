@@ -109,20 +109,18 @@ void odom_timer_callback(rcl_timer_t *timer, int64_t last_call_time)
     msg_odom.header.frame_id.data = (char *)"odom";
     msg_odom.child_frame_id.data = (char *)"base_link";
 
-    // Dummy position (no integration for now)
-    msg_odom.pose.pose.position.x = pos_x;
-    msg_odom.pose.pose.position.y = pos_y;
+    msg_odom.pose.pose.position.x = pos_y;
+    msg_odom.pose.pose.position.y = -pos_x;
     msg_odom.pose.pose.position.z = 0.0;
 
-    // Dummy orientation (no rotation tracking yet)
     msg_odom.pose.pose.orientation.x = 0.0;
     msg_odom.pose.pose.orientation.y = 0.0;
     msg_odom.pose.pose.orientation.z = sin(theta / 2.0);
     msg_odom.pose.pose.orientation.w = cos(theta / 2.0);
 
     // Set computed velocities
-    msg_odom.twist.twist.linear.x = Vx;
-    msg_odom.twist.twist.linear.y = Vy;
+    msg_odom.twist.twist.linear.x = Vy;
+    msg_odom.twist.twist.linear.y = -Vx;
     msg_odom.twist.twist.angular.z = omega;
 
     // Publish odometry message

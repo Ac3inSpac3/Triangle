@@ -46,7 +46,7 @@ class MotorControl {
     float setMotorMaxRPM  = 2500;
 
     // Inversion flags for axes
-    bool invertX = false;
+    bool invertX = true;
     bool invertY = true;
     bool invertOmega = false;
 

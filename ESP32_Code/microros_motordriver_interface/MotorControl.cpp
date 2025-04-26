@@ -58,7 +58,7 @@ void MotorControl::updateMotors(float Vx, float Vy, float omega) {
   setMotorPWM(motorSpeed3, m3En, m3Dir, m3Channel); // Motor 3
 }
 
-void MotorControl::computeMotorSpeeds(float Vx, float Vy, float omega) {
+void MotorControl::computeMotorSpeeds(float Vy, float Vx, float omega) {
   // Apply inversion settings if required
   if (invertX) Vx = -Vx;
   if (invertY) Vy = -Vy;
