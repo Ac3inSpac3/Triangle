@@ -192,6 +192,13 @@ ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyUSB0
 
 ## Tips and Tricks
 
+### Switching wifi networks
+
+```sh
+nmcli dev wifi connect "SSID"
+# if unknown network add 'password "password"' to the end
+````
+
 ### Working with GitHub through Terminal on the Pi5
 
 #### Pull changes using `git pull'
