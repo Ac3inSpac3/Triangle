@@ -175,7 +175,7 @@ WheelSpeeds MotorControl::readWheelSpeeds() {
   
   // Convert wheel RPM to linear speed (m/s) using wheel circumference
   float wheelCircumference = 2 * PI * 0.06; // Wheel radius = 0.055 m
-  float speedThreshold = 0.02; // Minimum speed threshold to filter jitter
+  float speedThreshold = 0.025; // Minimum speed threshold to filter jitter
 
   // Apply threshold filtering while preserving sign
   speeds.wheelSpeed1 = (std::abs(wheelRPM1 * wheelCircumference / 60.0) < speedThreshold) ? 0 : (wheelRPM1 * wheelCircumference / 60.0);
