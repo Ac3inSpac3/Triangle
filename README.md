@@ -130,7 +130,7 @@ source /opt/ros/jazzy/setup.bash
 10. Install other ROS2 packages:
 ```sh
 sudo apt update
-sudo apt install ros-jazzy-slam-toolbox ros-jazzy-navigation2 ros-jazzy-nav2-bringup ros-jazzy-tf-transformations ros-jazzy-robot-state-publisher ros-jazzy-robot-localization
+sudo apt install ros-jazzy-slam-toolbox ros-jazzy-navigation2 ros-jazzy-nav2-bringup ros-jazzy-tf-transformations ros-jazzy-robot-state-publisher ros-jazzy-robot-localization bluez
 ```
 
 10. Verify installation:
