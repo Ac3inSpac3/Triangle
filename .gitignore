@@ -7,5 +7,6 @@ src/micro-ROS-Agent
 src/micro_ros_msgs
 src/ros2_razor_imu
 src/sllidar_ros2
+src/ps_ros2_common
 src/bno055
 .DS_Store
