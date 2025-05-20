@@ -29,7 +29,7 @@ echo "6. Exit"
 echo "----------------------------------------"
 
 # Get user choice
-read -p "Enter your choice (1-5): " choice
+read -p "Enter your choice (1-6): " choice
 
 case $choice in
     1)

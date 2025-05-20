@@ -14,7 +14,7 @@ class TestMotionRunner(Node):
 
         self.last_test_time = self.get_clock().now().seconds_nanoseconds()[0]
         self.cooldown = 2  # seconds between test triggers
-        self.square_repeats = 1
+        self.square_repeats = 2
         self.move_speed = 0.2  # m/s
         self.turn_speed = 0.5  # rad/s
 
@@ -64,7 +64,7 @@ class TestMotionRunner(Node):
     def run_square_test(self, repeats):
         self.get_logger().info(f"Running square test ({repeats} loops)")
         self.toggle_logging(True)
-        side_length = 1.0  # meters
+        side_length = 0.25  # meters
         duration = side_length / self.move_speed
 
         for i in range(repeats):
@@ -78,7 +78,7 @@ class TestMotionRunner(Node):
     def run_forward_back_test(self):
         self.get_logger().info("Running forward/back test")
         self.toggle_logging(True)
-        duration = 1.0 / self.move_speed
+        duration = 0.5 / self.move_speed
         self.publish_twist(x=self.move_speed, duration=duration)
         self.publish_twist(x=-self.move_speed, duration=duration)
         self.toggle_logging(False)
@@ -86,7 +86,7 @@ class TestMotionRunner(Node):
     def run_left_right_test(self):
         self.get_logger().info("Running left/right test")
         self.toggle_logging(True)
-        duration = 1.0 / self.move_speed
+        duration = 0.5 / self.move_speed
         self.publish_twist(y=self.move_speed, duration=duration)
         self.publish_twist(y=-self.move_speed, duration=duration)
         self.toggle_logging(False)
