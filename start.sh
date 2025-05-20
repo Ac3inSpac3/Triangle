@@ -24,7 +24,8 @@ echo "1. Start Mapping Mode (SLAM)"
 echo "2. Start Navigation Mode (with saved map)"
 echo "3. Manual Control"
 echo "4. Manual Control With Logging"
-echo "5. Exit"
+echo "5. Automated Test Procedure with Logging"
+echo "6. Exit"
 echo "----------------------------------------"
 
 # Get user choice
@@ -63,6 +64,11 @@ case $choice in
         ;;
 
     5)
+        echo "Starting Automated Test Procedure with logging"
+        ros2 launch triangle testing_robot_logging.launch.py
+        ;;
+
+    6)
         echo "Exiting..."
         exit 0
         ;;

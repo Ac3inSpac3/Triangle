@@ -1,55 +1,79 @@
 import rclpy
 from rclpy.node import Node
+from std_msgs.msg import Int32
+from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
-import csv
-import os
 from datetime import datetime
-from math import atan2
-import numpy as np
+import os
+import csv
 
-class OdometryLogger(Node):
+class CmdOdomLogger(Node):
     def __init__(self):
-        super().__init__('odometry_logger')
-        self.subscription = self.create_subscription(
-            Odometry,
-            '/odometry/filtered',
-            self.odom_callback,
-            10)
-        # Save logs to ~/ros2_ws/logs/
-        ros_ws_path = os.path.expanduser('~/ros2_ws')
-        logs_dir = os.path.join(ros_ws_path, 'testing_logs')
-        os.makedirs(logs_dir, exist_ok=True)
+        super().__init__('cmd_odom_logger')
+        self.enabled = False
+        self.file = None
+        self.writer = None
+        self.latest_cmd = Twist()
 
-        self.log_filename = f'odometry_log_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv'
-        self.log_path = os.path.join(logs_dir, self.log_filename)
-        self.file = open(self.log_path, 'w', newline='')
-        self.writer = csv.writer(self.file)
-        self.writer.writerow(['time', 'x', 'y', 'yaw_deg'])
+        self.logs_dir = os.path.expanduser('~/ros2_ws/testing_logs')
+        os.makedirs(self.logs_dir, exist_ok=True)
+
+        self.create_subscription(Int32, '/enb_state', self.enable_callback, 10)
+        self.create_subscription(Twist, '/cmd_vel', self.cmd_callback, 10)
+        self.create_subscription(Odometry, '/odometry/filtered', self.odom_callback, 10)
+
+        self.get_logger().info('Cmd/Odom logger initialized. Waiting for /enb_state to start logging...')
+
+    def enable_callback(self, msg):
+        if msg.data == 1 and not self.enabled:
+            self.enabled = True
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            filename = f'cmd_vs_odom_log_{timestamp}.csv'
+            self.log_path = os.path.join(self.logs_dir, filename)
+            self.file = open(self.log_path, 'w', newline='')
+            self.writer = csv.writer(self.file)
+            self.writer.writerow([
+                'time',
+                'cmd_linear_x', 'cmd_linear_y', 'cmd_angular_z',
+                'odom_linear_x', 'odom_linear_y', 'odom_angular_z'
+            ])
+            self.get_logger().info(f"Logging enabled. Writing to {self.log_path}")
+
+        elif msg.data == 0 and self.enabled:
+            self.enabled = False
+            if self.file:
+                self.file.close()
+                self.get_logger().info(f"Logging stopped. File saved to {self.log_path}")
+                self.file = None
+                self.writer = None
+
+    def cmd_callback(self, msg):
+        self.latest_cmd = msg
 
     def odom_callback(self, msg):
-        x = msg.pose.pose.position.x
-        y = msg.pose.pose.position.y
+        if self.enabled and self.writer:
+            t = msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9
+            cmd = self.latest_cmd
+            odom = msg.twist.twist
 
-        # Convert quaternion to yaw
-        q = msg.pose.pose.orientation
-        yaw = self.quaternion_to_yaw(q.x, q.y, q.z, q.w)
-        t = msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9
-        self.writer.writerow([f'{t:.3f}', f'{x:.3f}', f'{y:.3f}', f'{np.degrees(yaw):.2f}'])
-
-    def quaternion_to_yaw(self, x, y, z, w):
-        return atan2(2.0 * (w * z + x * y), 1.0 - 2.0 * (y * y + z * z))
+            self.writer.writerow([
+                f'{t:.3f}',
+                f'{cmd.linear.x:.3f}', f'{cmd.linear.y:.3f}', f'{cmd.angular.z:.3f}',
+                f'{odom.linear.x:.3f}', f'{odom.linear.y:.3f}', f'{odom.angular.z:.3f}'
+            ])
 
     def destroy_node(self):
-        self.file.close()
+        if self.enabled and self.file:
+            self.file.close()
         super().destroy_node()
 
 def main(args=None):
     rclpy.init(args=args)
-    node = OdometryLogger()
+    node = CmdOdomLogger()
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:
-        node.get_logger().info('Shutting down odometry logger...')
+        node.get_logger().info('Logger interrupted. Closing any open files...')
     finally:
         node.destroy_node()
         rclpy.shutdown()
