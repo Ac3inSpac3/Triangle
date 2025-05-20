@@ -14,6 +14,7 @@ setup(
         (f'share/{package_name}/launch',  ['launch/robot.launch.py']),
         (f'share/{package_name}/launch',  ['launch/nav.launch.py']),
         (f'share/{package_name}/launch',  ['launch/manual_robot.launch.py']),
+        (f'share/{package_name}/launch',  ['launch/manual_robot_logging.launch.py']),
         (f'share/{package_name}/config',  ['config/bno055_params_i2c.yaml']),
         (f'share/{package_name}/config',  ['config/nav2_params.yaml']),
     ],
@@ -28,6 +29,7 @@ setup(
         'console_scripts': [
         # ... your existing entry points ...
         'teleop_joy_node = triangle.teleop_joy_node:main',
+        'log_odometry = triangle.log_odometry:main',
         ],
     },
 )

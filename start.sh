@@ -23,11 +23,12 @@ echo "Please select an option:"
 echo "1. Start Mapping Mode (SLAM)"
 echo "2. Start Navigation Mode (with saved map)"
 echo "3. Manual Control"
-echo "4. Exit"
+echo "4. Manual Control With Logging"
+echo "5. Exit"
 echo "----------------------------------------"
 
 # Get user choice
-read -p "Enter your choice (1-4): " choice
+read -p "Enter your choice (1-5): " choice
 
 case $choice in
     1)
@@ -51,12 +52,17 @@ case $choice in
         ros2 launch triangle nav.launch.py
         ;;
 
-    4)
+    3)
         echo "Starting Manual control"
         ros2 launch triangle manual_robot.launch.py
         ;;
         
-    3)
+    4)
+        echo "Starting Manual control with logging"
+        ros2 launch triangle manual_robot_logging.launch.py
+        ;;
+
+    5)
         echo "Exiting..."
         exit 0
         ;;
